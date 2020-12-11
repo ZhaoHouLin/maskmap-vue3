@@ -71,12 +71,8 @@ export default {
         .get(api)
         .then((res) => {
           maskData.value = res.data.features
-          // console.log(maskData.value)
-
         })
-
     })    
-
 
     return {
       maskData,
@@ -127,8 +123,11 @@ export default {
           l-icon(:icon-url="iconUrl" :icon-size="iconSize")
           l-popup
             h2 口罩剩餘：
-            h3 成人 - {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
-            h3 兒童 - {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+            h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+            h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+            h3 
+              | 地址: 
+              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
 
 </template>
 
