@@ -34,9 +34,9 @@ export default {
   },
 
   setup() {
-    // const zoom = ref(12)
-    // const iconWidth = ref(25)
-    // const iconHeight = ref(40)
+    const zoom = ref(12)
+    const iconWidth = ref(25)
+    const iconHeight = ref(40)
 
 
     let maskData = ref([])
@@ -46,95 +46,49 @@ export default {
         area: '中正區',
       }
     )
-    
-    let openStreetMap = ref({})
-    // const iconUrl = computed(()=> {
-    //   return `https://placekitten.com/${iconWidth.value}/${iconHeight.value}`
-    // })
+    const iconUrl = computed(()=> {
+      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
+    })
 
-    // const iconSize = computed(()=> {
-    //   return [iconWidth.value, iconHeight.value]
-    // })
+    const iconSize = computed(()=> {
+      return [iconWidth.value, iconHeight.value]
+    })
+
+    const changeIcon = () => {
+      iconWidth.value += 2;
+      if (iconWidth.value > iconHeight.value) {
+        iconWidth.value = Math.floor(iconHeight.value / 2);
+      }
+    }
+
+    const log = (a) => {
+      console.log(a)
+    }
 
     onMounted(()=> {
       const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
       axios
         .get(api)
         .then((res) => {
-          // console.log(res.data.features);
           maskData.value = res.data.features
-          console.log(maskData.value)
-          // maskData.push(res.data.features)
-          // console.log(maskData.value[0].properties);
-          // console.log('maskData1:',maskData[0]);
+          // console.log(maskData.value)
+
         })
 
-      openStreetMap.value = Leaflet.map('map',{
-        center: [25.043293,121.5205653],
-        zoom: 12,
-      })
-
-      Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 20,
-      }).addTo(openStreetMap.value)
-
-    })
-
-
-    const pharmacies = computed(()=> {
-      // console.log('maskData2:',maskData);
-      // return maskData.filter((pharmacy) => {
-      //   if (!select.area) {
-      //     console.log('pharmacy:',pharmacy.properties);
-      //     return pharmacy.properties.county === select.city;
-      //   }
-      //   return pharmacy.properties.town === select.area;
-      // })
-    })
-
-
-    // const updateMap = ()=> {
-    //   openStreetMap.value.eachLayer((layer) => {
-    //     if (layer instanceof Leaflet.Marker) {
-    //       openStreetMap.value.removeLayer(layer);
-    //     }
-    //   })
-
-    //   pharmacies.forEach((pharmacy) => {
-    //     // 透過藥局經緯度疊加標記
-     
-    //     Leaflet.marker([
-    //       pharmacy.geometry.coordinates[1],
-    //       pharmacy.geometry.coordinates[0],
-    //     ]).addTo(openStreetMap.value).bindPopup(`<p><strong style="font-size: 20px;">${pharmacy.properties.name}</strong></p>
-    //       <strong style="font-size: 16px; color: #d45345;">口罩剩餘：成人 - ${pharmacy.properties.mask_adult ? `${pharmacy.properties.mask_adult} 個` : '未取得資料'} / 兒童 - ${pharmacy.properties.mask_child ? `${pharmacy.properties.mask_child} 個` : '未取得資料'}</strong><br>
-    //       地址: ${pharmacy.properties.address}<br>
-    //       電話: ${pharmacy.properties.phone}<br>
-    //       <small>最後更新時間: ${pharmacy.properties.updated}</small>`)
-    //   });
-    // }
-
-    // watch(()=> {
-    //   pharmacies() 
-    // })
-    // watch(pharmacies.value,(newIdx,oldIdx)=> {
-    //   updateMap()
-    // })
-
-    
+    })    
 
 
     return {
       maskData,
       cityName,
       select,
-      pharmacies,
-      // zoom,
-      // iconWidth,
-      // iconHeight,
-      // iconUrl,
-      // iconSize
+      zoom,
+      iconWidth,
+      iconHeight,
+      iconUrl,
+      iconSize,
+      changeIcon,
+      log
     }
   }
 }
@@ -161,13 +115,21 @@ export default {
           p 
             | 地址: 
             a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
-  #map
-  //- .map
-  //-   l-map(v-model="zoom"
-  //-       v-model:zoom="zoom"
-  //-       :center="[25.043293,121.5205653]"
-  //-       @move="log('move')")
-  //-     l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+  //- #map
+  .map
+    l-map(v-model="zoom"
+        v-model:zoom="zoom"
+        :center="[25.043293,121.5205653]"
+        @move="log('move')")
+      l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+      .test(v-for='(item,key) in maskData')
+        l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
+          l-icon(:icon-url="iconUrl" :icon-size="iconSize")
+          l-popup
+            h2 口罩剩餘：
+            h3 成人 - {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+            h3 兒童 - {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+
 </template>
 
 <style lang="stylus" scoped>
@@ -183,20 +145,12 @@ export default {
       flexCenter()
     .pharmacy
       flex-direction column
-      // overflow-x hidden
-      // overflow-y scroll
-      // border 1px solid #000
+      overflow-x hidden
+      overflow-y scroll
       .info
-        // overflow auto
         size(100%,auto)
 
-
-  #map
-    position relative
+  .map
     size(70%,100vh)
-    overflow hidden
-
-  // .map
-  //   size(70%,100vh)
 
 </style>
