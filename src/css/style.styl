@@ -1,0 +1,37 @@
+sm = 1rem
+md = 2rem
+lg = 3rem
+xl = 4rem
+
+size(w=100%,h=100vh)
+  width w
+  height h
+
+flexCenter(jus=center , alc=jus , direct=row)
+  flex-direction direct
+  display flex
+  justify-content jus
+  align-items alc
+
+posCenter(t=50%,l=50%)
+  position absolute
+  top t
+  left l
+  transform translate(-50%,-50%)
+
+*
+  margin 0
+  padding 0
+  box-sizing border-box
+  
+  h1,li,a,h3
+    font-family '微軟正黑體'
+  li
+
+    text-align center
+    list-style none
+  a
+    text-decoration none
+
+
+  

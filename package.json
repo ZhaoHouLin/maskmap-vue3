@@ -7,7 +7,10 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vue-leaflet/vue-leaflet": "^0.5.0",
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
+    "leaflet": "^1.7.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
@@ -18,6 +21,8 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
+    "pug": "^3.0.0",
+    "pug-plain-loader": "^1.1.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2"
   },
