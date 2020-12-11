@@ -92,17 +92,18 @@ export default {
 
 <template lang='pug'>
 #app
-  .left
-    .city
-      h2 縣市: 
-      select(v-model='select.city')
-        option 請選擇縣市
-        option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
-    .area
-      h2 地區: 
-      select(v-model='select.area')
-        option 請選擇地區
-        option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName') {{area.AreaName}}
+  .list
+    .list-select
+      .city
+        h2 縣市: 
+        select(v-model='select.city')
+          option 請選擇縣市
+          option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
+      .area
+        h2 地區: 
+        select(v-model='select.area')
+          option 請選擇地區
+          option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName') {{area.AreaName}}
     .pharmacy
       .info(v-for='(item,key) in maskData')
         a(:key='key' v-if='item.properties.county === select.city && item.properties.town === select.area')
@@ -136,18 +137,24 @@ export default {
 #app
   flexCenter()
   overflow hidden
-  .left
+  .list
     size(30%)
-    // flexCenter()
-    // flex-direction column
-    .city,.area,.pharmacy
+    flexCenter()
+    flex-direction column
+    .list-select
       flexCenter()
+      .city,.area
+        flexCenter()
+        margin 8px
     .pharmacy
+      size(100%,600px)
+      flexCenter()
       flex-direction column
-      overflow-x hidden
-      overflow-y scroll
+      overflow auto
+      padding-left 16px
+      margin-top 32px
       .info
-        size(100%,auto)
+        size(100%,100%)
 
   .map
     size(70%,100vh)
