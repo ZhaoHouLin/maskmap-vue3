@@ -111,17 +111,17 @@ export default {
           p 
             | 地址: 
             a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
-  //- #map
   .map
     l-map(v-model="zoom"
         v-model:zoom="zoom"
         :center="[25.043293,121.5205653]"
         @move="log('move')")
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-      .test(v-for='(item,key) in maskData')
+      .lMarker(v-for='(item,key) in maskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
           l-icon(:icon-url="iconUrl" :icon-size="iconSize")
           l-popup
+            h2 {{item.properties.name}}
             h2 口罩剩餘：
             h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
