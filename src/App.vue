@@ -1,8 +1,8 @@
 <script>
 import cityName from './assets/cityName.json'
-import axios from 'axios'
 import Leaflet from 'leaflet'
 import { onMounted, ref, reactive, computed ,watch} from 'vue'
+import {useStore} from 'vuex'
 import {
   LMap,
   LIcon,
@@ -34,12 +34,16 @@ export default {
   },
 
   setup() {
+
+    const store = useStore()
     const zoom = ref(12)
     const iconWidth = ref(25)
     const iconHeight = ref(40)
 
-
-    let maskData = ref([])
+    const maskData = computed(()=> {
+      return store.getters.maskData
+    })
+    
     const select = reactive(
       {
         city: '臺北市',
@@ -65,13 +69,13 @@ export default {
       console.log(a)
     }
 
-    onMounted(()=> {
+    const initMaskData = () => {
       const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
-      axios
-        .get(api)
-        .then((res) => {
-          maskData.value = res.data.features
-        })
+      store.dispatch('getMaskAPI',api)
+    }
+
+    onMounted(()=> {
+      initMaskData()
     })    
 
     return {
