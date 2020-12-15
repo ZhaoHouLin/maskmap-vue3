@@ -44,6 +44,10 @@ export default {
     const maskData = computed(()=> {
       return store.getters.maskData
     })
+
+    const filterMaskData = computed(()=> {
+      return store.getters.filterMaskData
+    })
     
     const select = reactive(
       {
@@ -70,7 +74,7 @@ export default {
       console.log(a)
     }
 
-    const newCenter = computed(()=> { //回傳選擇的藥局座標
+    const newCenter = computed(() => { //回傳選擇的藥局座標
       return [center.value[0],center.value[1]]
     })
 
@@ -82,6 +86,10 @@ export default {
     const initMaskData = () => {
       const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
       store.dispatch('getMaskAPI',api)
+    }
+
+    const filterCityArea = (city,area) => {
+      store.dispatch('filterCityArea',[city,area])
     }
 
     onMounted(()=> {
@@ -103,15 +111,17 @@ export default {
       center,
       reCenter,
       newCenter,
+      filterCityArea,
+      filterMaskData
     }
   }
 }
 </script>
 
 <template lang='pug'>
-#app
+.content
   .list
-    .list-select
+    .list-select(@change='filterCityArea(select.city,select.area)')
       .city
         h2 縣市: 
         select(v-model='select.city')
@@ -119,11 +129,11 @@ export default {
           option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
       .area
         h2 地區: 
-        select(v-model='select.area')
+        select(v-model='select.area' )
           option 請選擇地區
-          option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName') {{area.AreaName}}
+          option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
     .pharmacy
-      .info(v-for='(item,key) in maskData' @click='reCenter(item.geometry.coordinates)')
+      .info(v-for='(item,key) in filterMaskData' @click='reCenter(item.geometry.coordinates)')
         a(:key='key' v-if='item.properties.county === select.city && item.properties.town === select.area')
           h3 {{ item.properties.name }}
           p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
@@ -138,7 +148,7 @@ export default {
         :center="newCenter"
         @move="log('move')")
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-      .lMarker(v-for='(item,key) in maskData')
+      .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
           l-icon(:icon-url="iconUrl" :icon-size="iconSize")
           l-popup
@@ -154,29 +164,33 @@ export default {
 
 <style lang="stylus" scoped>
 @import './css/style.styl'
-#app
+.content
   flexCenter()
   overflow hidden
+  font-display row-reverse
   .list
+    background-color #fff
     size(30%)
     flexCenter()
     flex-direction column
     .list-select
+      // position absolute
       flexCenter()
       .city,.area
         flexCenter()
         margin 8px
     .pharmacy
-      size(100%,600px)
+      size()
       flexCenter()
       flex-direction column
       overflow auto
       padding-left 16px
-      margin-top 32px
+      // margin-top 32px
       .info
-        size(100%,100%)
+        size()
 
   .map
-    size(70%,100vh)
+    // position absolute
+    size()
 
 </style>
