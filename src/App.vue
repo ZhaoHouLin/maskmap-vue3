@@ -1,7 +1,7 @@
 <script>
 import cityName from './assets/cityName.json'
 import Leaflet from 'leaflet'
-import { onMounted, ref, reactive, computed ,watch} from 'vue'
+import { onMounted, ref, reactive, computed ,watch, onUpdated} from 'vue'
 import {useStore} from 'vuex'
 import {
   LMap,
@@ -37,6 +37,7 @@ export default {
 
     const store = useStore()
     const zoom = ref(12)
+    const center = ref([25.043293,121.5205653])
     const iconWidth = ref(25)
     const iconHeight = ref(40)
 
@@ -69,14 +70,24 @@ export default {
       console.log(a)
     }
 
+    const newCenter = computed(()=> { //回傳選擇的藥局座標
+      return [center.value[0],center.value[1]]
+    })
+
+    const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
+      center.value[0]=coordinates[1]
+      center.value[1]=coordinates[0]
+    }
+
     const initMaskData = () => {
       const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
       store.dispatch('getMaskAPI',api)
     }
 
     onMounted(()=> {
-      initMaskData()
+        initMaskData()
     })    
+
 
     return {
       maskData,
@@ -88,7 +99,10 @@ export default {
       iconUrl,
       iconSize,
       changeIcon,
-      log
+      log,
+      center,
+      reCenter,
+      newCenter,
     }
   }
 }
@@ -109,7 +123,7 @@ export default {
           option 請選擇地區
           option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName') {{area.AreaName}}
     .pharmacy
-      .info(v-for='(item,key) in maskData')
+      .info(v-for='(item,key) in maskData' @click='reCenter(item.geometry.coordinates)')
         a(:key='key' v-if='item.properties.county === select.city && item.properties.town === select.area')
           h3 {{ item.properties.name }}
           p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
@@ -117,9 +131,11 @@ export default {
             | 地址: 
             a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
   .map
-    l-map(v-model="zoom"
-        v-model:zoom="zoom"
-        :center="[25.043293,121.5205653]"
+    l-map(
+      ref="map"
+
+        :zoom="zoom" 
+        :center="newCenter"
         @move="log('move')")
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in maskData')

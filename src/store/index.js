@@ -7,7 +7,7 @@ export default createStore({
   mutations: {
     storeMaskData(state,payload) {
       state.maskData = payload
-      console.log(state.maskData);
+      // console.log(state.maskData);
     }
   },
   actions: {
