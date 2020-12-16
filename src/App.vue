@@ -78,9 +78,9 @@ export default {
       center.value[1]=coordinates[0]
     }
 
-    const initMaskData = () => {
+    const initMaskData = (city,area) => {
       const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
-      store.dispatch('getMaskAPI',api)
+      store.dispatch('getMaskAPI',{api,city,area})
     }
 
     const filterCityArea = (city,area) => {
@@ -94,7 +94,7 @@ export default {
 
 
     onMounted(()=> {
-        initMaskData()
+        initMaskData(select.city,select.area)
     })    
 
     return {
@@ -154,12 +154,12 @@ export default {
   .list(:class='[{"open": isOpen}]')
     .pharmacy
       .info(v-for='(item,key) in filterMaskData' @click='reCenter(item.geometry.coordinates)')
-        a(:key='key' v-if='item.properties.county === select.city && item.properties.town === select.area')
-          h3 {{ item.properties.name }}
-          p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
-          p 
-            | 地址: 
-            a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
+  
+        h3 {{ item.properties.name }}
+        p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
+        p 
+          | 地址: 
+          a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
 
 </template>
 
@@ -204,7 +204,7 @@ export default {
 
 
   .list
-    background-color #fff
+    background-color rgba(255,255,255,0.7)
     position absolute
     top 0
     right -30%
@@ -224,7 +224,7 @@ export default {
       overflow auto
       padding-left 16px
       .info
-        size()
+        size(100%,auto)
         margin-bottom 8px
       
     

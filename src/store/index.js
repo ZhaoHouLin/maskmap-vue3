@@ -8,25 +8,26 @@ export default createStore({
   mutations: {
     storeMaskData(state,payload) {
       state.maskData = payload
-      state.filterMaskData = payload
-      // console.log('mask',state.maskData);
     },
     storeFilterMaskData(state,payload) {
       state.filterMaskData.push(payload)
-      // console.log('filterDATA',state.filterMaskData);
     }
   },
   actions: {
-    getMaskAPI({commit},API) {
+    getMaskAPI({commit},payload) {
       axios
-        .get(API)
+        .get(payload.api)
         .then((res) => {
+          this.state.filterMaskData = []
+          res.data.features.filter((item) => {
+            if (item.properties.county === payload.city && item.properties.town === payload.area) {
+              commit('storeFilterMaskData', item)
+            }
+          })
           commit('storeMaskData', res.data.features)
         })
     },
     filterCityArea({ commit }, payload) {
-
-      // console.log(this.state.maskData);
       this.state.filterMaskData = []
       this.state.maskData.filter((item)=> {
         if(item.properties.county === payload[0] && item.properties.town === payload[1]) {
