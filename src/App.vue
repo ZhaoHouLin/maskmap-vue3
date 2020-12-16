@@ -40,6 +40,7 @@ export default {
     const center = ref([25.043293,121.5205653])
     const iconWidth = ref(25)
     const iconHeight = ref(40)
+    const isOpen =ref(false)
 
     const maskData = computed(()=> {
       return store.getters.maskData
@@ -55,6 +56,7 @@ export default {
         area: '中正區',
       }
     )
+
     const iconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
     })
@@ -62,13 +64,6 @@ export default {
     const iconSize = computed(()=> {
       return [iconWidth.value, iconHeight.value]
     })
-
-    const changeIcon = () => {
-      iconWidth.value += 2;
-      if (iconWidth.value > iconHeight.value) {
-        iconWidth.value = Math.floor(iconHeight.value / 2);
-      }
-    }
 
     const log = (a) => {
       console.log(a)
@@ -92,10 +87,15 @@ export default {
       store.dispatch('filterCityArea',[city,area])
     }
 
+    const handleOpen = () => {
+      isOpen.value = !isOpen.value
+      console.log(isOpen.value);
+    }
+
+
     onMounted(()=> {
         initMaskData()
     })    
-
 
     return {
       maskData,
@@ -106,13 +106,14 @@ export default {
       iconHeight,
       iconUrl,
       iconSize,
-      changeIcon,
       log,
       center,
       reCenter,
       newCenter,
       filterCityArea,
-      filterMaskData
+      filterMaskData,
+      isOpen,
+      handleOpen
     }
   }
 }
@@ -120,7 +121,26 @@ export default {
 
 <template lang='pug'>
 .content
-  .list
+  .map
+    l-map(
+      ref="map"
+        :zoom="zoom" 
+        :center="newCenter"
+        @move="log('move')" )
+      l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+      .lMarker(v-for='(item,key) in filterMaskData')
+        l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
+          l-icon(:icon-url="iconUrl" :icon-size="iconSize")
+          l-popup
+            h2 {{item.properties.name}}
+            h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+            h3 兒童口罩: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+            h3 
+              | 地址: 
+              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
+  .switch(:class='[{"open": isOpen},"fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
+
+  .list(:class='[{"open": isOpen}]')
     .list-select(@change='filterCityArea(select.city,select.area)')
       .city
         h2 縣市: 
@@ -140,57 +160,67 @@ export default {
           p 
             | 地址: 
             a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
-  .map
-    l-map(
-      ref="map"
-
-        :zoom="zoom" 
-        :center="newCenter"
-        @move="log('move')")
-      l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-      .lMarker(v-for='(item,key) in filterMaskData')
-        l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
-          l-icon(:icon-url="iconUrl" :icon-size="iconSize")
-          l-popup
-            h2 {{item.properties.name}}
-            h2 口罩剩餘：
-            h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
-            h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
-            h3 
-              | 地址: 
-              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
 
 </template>
 
 <style lang="stylus" scoped>
 @import './css/style.styl'
-.content
-  flexCenter()
+.content 
   overflow hidden
-  font-display row-reverse
+
+  .switch
+    position absolute
+    z-index 9999
+    top 0
+    right 0
+    font-size 48px
+    padding 0
+    color #222
+    transition 0.5s
+    flexCenter(center,flex-start)
+    cursor pointer
+    &.open
+      right 30%
+
+  .map
+    flexCenter()
+    size()
+
   .list
     background-color #fff
-    size(30%)
-    flexCenter()
-    flex-direction column
+    position absolute
+    top 0
+    right -30%
+    z-index 999
+    size(30%,100vh)
+    flexCenter(,,column)
+    // flex-direction column
+    transition 0.5s
+    &.open
+      right 0
+      
+    
     .list-select
-      // position absolute
       flexCenter()
+      position absolute
+      top 0
+      left -90%
       .city,.area
         flexCenter()
         margin 8px
+        h2
+          margin-right 8px
     .pharmacy
       size()
-      flexCenter()
+      flexCenter(flex-start,center)
       flex-direction column
       overflow auto
       padding-left 16px
-      // margin-top 32px
       .info
         size()
-
-  .map
-    // position absolute
-    size()
+        margin-bottom 8px
+      
+    
+    
 
 </style>
