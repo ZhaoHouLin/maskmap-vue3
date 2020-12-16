@@ -140,7 +140,7 @@ export default {
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
   .switch(:class='[{"open": isOpen},"fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
 
-  .list-select(@change='filterCityArea(select.city,select.area)' :class='[{"open": isOpen}]')
+  .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
     .city
       h2 縣市: 
       select(v-model='select.city')
