@@ -140,18 +140,18 @@ export default {
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
   .switch(:class='[{"open": isOpen},"fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
 
+  .list-select(@change='filterCityArea(select.city,select.area)' :class='[{"open": isOpen}]')
+    .city
+      h2 縣市: 
+      select(v-model='select.city')
+        option 請選擇縣市
+        option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
+    .area
+      h2 地區: 
+      select(v-model='select.area' )
+        option 請選擇地區
+        option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
   .list(:class='[{"open": isOpen}]')
-    .list-select(@change='filterCityArea(select.city,select.area)')
-      .city
-        h2 縣市: 
-        select(v-model='select.city')
-          option 請選擇縣市
-          option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
-      .area
-        h2 地區: 
-        select(v-model='select.area' )
-          option 請選擇地區
-          option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
     .pharmacy
       .info(v-for='(item,key) in filterMaskData' @click='reCenter(item.geometry.coordinates)')
         a(:key='key' v-if='item.properties.county === select.city && item.properties.town === select.area')
@@ -169,22 +169,39 @@ export default {
   overflow hidden
 
   .switch
+    flexCenter(center,flex-start)
     position absolute
-    z-index 9999
     top 0
     right 0
     font-size 48px
     padding 0
     color #222
     transition 0.5s
-    flexCenter(center,flex-start)
     cursor pointer
+    z-index 999
     &.open
       right 30%
 
   .map
     flexCenter()
     size()
+
+
+  .list-select
+    flexCenter()
+    position absolute
+    top 0
+    right 48px
+    transition 0.5s
+    z-index 999
+    &.open
+      right calc(30% + 48px)
+    .city,.area
+      flexCenter()
+      margin 8px
+      h2
+        margin-right 8px
+
 
   .list
     background-color #fff
@@ -194,22 +211,12 @@ export default {
     z-index 999
     size(30%,100vh)
     flexCenter(,,column)
-    // flex-direction column
     transition 0.5s
     &.open
       right 0
       
     
-    .list-select
-      flexCenter()
-      position absolute
-      top 0
-      left -90%
-      .city,.area
-        flexCenter()
-        margin 8px
-        h2
-          margin-right 8px
+    
     .pharmacy
       size()
       flexCenter(flex-start,center)
