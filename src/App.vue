@@ -3,6 +3,7 @@ import cityName from './assets/cityName.json'
 import Leaflet from 'leaflet'
 import { onMounted, ref, reactive, computed ,watch, onUpdated} from 'vue'
 import {useStore} from 'vuex'
+import {useRoute} from 'vue-router'
 import {
   LMap,
   LIcon,
@@ -35,8 +36,9 @@ export default {
 
   setup() {
 
+    const route = useRoute()
     const store = useStore()
-    const zoom = ref(12)
+    const zoom = ref(15)
     const center = ref([25.043293,121.5205653])
     const iconWidth = ref(25)
     const iconHeight = ref(40)
@@ -89,12 +91,12 @@ export default {
 
     const handleOpen = () => {
       isOpen.value = !isOpen.value
-      console.log(isOpen.value);
     }
 
 
     onMounted(()=> {
         initMaskData(select.city,select.area)
+        console.log(route)
     })    
 
     return {
@@ -153,14 +155,17 @@ export default {
         option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
   .list(:class='[{"open": isOpen}]')
     .pharmacy
-      .info(v-for='(item,key) in filterMaskData' @click='reCenter(item.geometry.coordinates)')
+      router-link.info(v-for='(item,key) in filterMaskData' 
+      @click='reCenter(item.geometry.coordinates)'
+      :to='`/${item.properties.name}`'
+      )
   
         h3 {{ item.properties.name }}
         p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
         p 
           | 地址: 
           a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
-
+      router-view
 </template>
 
 <style lang="stylus" scoped>
@@ -173,6 +178,7 @@ export default {
     position absolute
     top 0
     right 0
+    margin-right 16px
     font-size 48px
     padding 0
     color #222
@@ -185,7 +191,6 @@ export default {
   .map
     flexCenter()
     size()
-
 
   .list-select
     flexCenter()
@@ -204,7 +209,7 @@ export default {
 
 
   .list
-    background-color rgba(255,255,255,0.7)
+    background-color rgba(255,255,255,0.8)
     position absolute
     top 0
     right -30%
@@ -218,14 +223,18 @@ export default {
     
     
     .pharmacy
+      cursor pointer
       size()
       flexCenter(flex-start,center)
       flex-direction column
       overflow auto
-      padding-left 16px
+      // padding-left 16px
       .info
         size(100%,auto)
-        margin-bottom 8px
+        padding 4px 16px
+        &:hover
+          background-color #C8FACC
+
       
     
     
