@@ -60,7 +60,13 @@ export default {
     )
 
     const iconUrl = computed(()=> {
-      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
+      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png`
+    })
+
+    const actIconUrl = computed(()=> {
+      // if ($routh.path===name){
+        return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`
+      // }
     })
 
     const iconSize = computed(()=> {
@@ -107,6 +113,7 @@ export default {
       iconWidth,
       iconHeight,
       iconUrl,
+      actIconUrl,
       iconSize,
       log,
       center,
@@ -132,7 +139,7 @@ export default {
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
-          l-icon(:icon-url="iconUrl" :icon-size="iconSize")
+          l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize")
           l-popup
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
@@ -220,8 +227,6 @@ export default {
     &.open
       right 0
       
-    
-    
     .pharmacy
       cursor pointer
       size()
@@ -230,9 +235,12 @@ export default {
       overflow auto
       // padding-left 16px
       .info
+        color #222
         size(100%,auto)
         padding 4px 16px
         &:hover
+          background-color #C8FACC
+        &.router-link-active
           background-color #C8FACC
 
       
