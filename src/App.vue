@@ -64,9 +64,7 @@ export default {
     })
 
     const actIconUrl = computed(()=> {
-      // if ($routh.path===name){
         return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`
-      // }
     })
 
     const iconSize = computed(()=> {
@@ -98,7 +96,6 @@ export default {
     const handleOpen = () => {
       isOpen.value = !isOpen.value
     }
-
 
     onMounted(()=> {
         initMaskData(select.city,select.area)
@@ -233,7 +230,7 @@ export default {
       flexCenter(flex-start,center)
       flex-direction column
       overflow auto
-      // padding-left 16px
+
       .info
         color #222
         size(100%,auto)
