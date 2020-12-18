@@ -157,7 +157,7 @@ export default {
       select(v-model='select.area' )
         option 請選擇地區
         option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
-    .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
+    .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-up":isOpen}]' @click='handleOpen' )
 
   .list(:class='[{"open": isOpen}]')
     .pharmacy
@@ -185,6 +185,7 @@ export default {
 
   .list-select
     flexCenter()
+    size(30%,auto)
     background-color rgba(255,255,255,0.8)
     border-radius 0 0 0 16px
     box-shadow -4px 4px 8px rgba(0,0,0,0.5)
@@ -193,8 +194,8 @@ export default {
     right 0
     transition 0.5s
     z-index 999
-    &.open
-      right 30%
+    // &.open
+    //   right 30%
     .city,.area
       flexCenter()
       margin 8px
@@ -205,7 +206,7 @@ export default {
       top 0
       right 0
       font-size 48px
-      padding 0 8px
+      padding 8px 8px
       color #222
       transition 0.5s
       cursor pointer
@@ -221,7 +222,8 @@ export default {
     flexCenter(,,column)
     transition 0.5s
     &.open
-      top 0
+      top 10vh
+      size(30%,90vh)
       
     .pharmacy
       cursor pointer
@@ -238,5 +240,38 @@ export default {
           background-color #C8FACC
         &.router-link-active
           background-color #C8FACC
+
+
+@media screen and (max-width 420px)
+  .content
+    .list-select
+      font-size 0.6rem
+      size(auto,auto)
+    .list
+      font-size 0.6rem
+      size(100%,90vh)
+      &.open
+        top 10vh
+        size(100%,90vh)
+
+@media screen and (max-width 1024px)
+  .content
+    .list-select
+      font-size 0.6rem
+      size(auto,auto)
+    .list
+      font-size 0.6rem
+      &.open
+        top 10vh
+
+@media screen and (max-width 1360px)
+  .content
+    .list-select
+      font-size 0.6rem
+      size(auto,auto)
+    .list
+      font-size 0.6rem
+      &.open
+        top 10vh
 
 </style>
