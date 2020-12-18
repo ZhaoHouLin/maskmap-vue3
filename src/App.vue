@@ -144,7 +144,7 @@ export default {
             h3 
               | 地址: 
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
-  .switch(:class='[{"open": isOpen},"fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
+  
 
   .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
     .city
@@ -157,6 +157,8 @@ export default {
       select(v-model='select.area' )
         option 請選擇地區
         option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
+    .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
+
   .list(:class='[{"open": isOpen}]')
     .pharmacy
       router-link.info(v-for='(item,key) in filterMaskData' 
@@ -177,52 +179,49 @@ export default {
 .content 
   overflow hidden
 
-  .switch
-    flexCenter(center,flex-start)
-    position absolute
-    top 0
-    right 0
-    margin-right 16px
-    font-size 48px
-    padding 0
-    color #222
-    transition 0.5s
-    cursor pointer
-    z-index 999
-    &.open
-      right 30%
-
   .map
     flexCenter()
     size()
 
   .list-select
     flexCenter()
+    background-color rgba(255,255,255,0.8)
+    border-radius 0 0 0 16px
+    box-shadow -4px 4px 8px rgba(0,0,0,0.5)
     position absolute
     top 0
-    right 48px
+    right 0
     transition 0.5s
     z-index 999
     &.open
-      right calc(30% + 48px)
+      right 30%
     .city,.area
       flexCenter()
       margin 8px
       h2
         margin-right 8px
-
+    .switch
+      flexCenter(center,flex-start)
+      top 0
+      right 0
+      font-size 48px
+      padding 0 8px
+      color #222
+      transition 0.5s
+      cursor pointer
+      z-index 999
 
   .list
     background-color rgba(255,255,255,0.8)
     position absolute
-    top 0
-    right -30%
+    top -100vh
+    right 0
     z-index 999
     size(30%,100vh)
     flexCenter(,,column)
     transition 0.5s
     &.open
-      right 0
+      top 0
       
     .pharmacy
       cursor pointer
@@ -239,9 +238,5 @@ export default {
           background-color #C8FACC
         &.router-link-active
           background-color #C8FACC
-
-      
-    
-    
 
 </style>
