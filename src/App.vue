@@ -64,7 +64,7 @@ export default {
     })
 
     const actIconUrl = computed(()=> {
-        return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`
+        return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`
     })
 
     const iconSize = computed(()=> {
@@ -119,7 +119,7 @@ export default {
       filterCityArea,
       filterMaskData,
       isOpen,
-      handleOpen
+      handleOpen,
     }
   }
 }
@@ -135,9 +135,9 @@ export default {
         @move="log('move')" )
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in filterMaskData')
-        l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]'  )
-          l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize")
-          l-popup
+        l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
+          l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
+          l-popup()
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童口罩: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
