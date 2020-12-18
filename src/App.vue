@@ -40,6 +40,9 @@ export default {
     const store = useStore()
     const zoom = ref(15)
     const center = ref([25.043293,121.5205653])
+    const userPos = reactive({
+
+    })
     const iconWidth = ref(25)
     const iconHeight = ref(40)
     const isOpen =ref(false)
@@ -89,6 +92,18 @@ export default {
       store.dispatch('getMaskAPI',{api,city,area})
     }
 
+    const getLocation = () => {   //抓取目前地理位置
+      if ('geolocation' in navigator) {//
+       let possition = navigator.geolocation.getCurrentPosition((pos)=> {
+          userPos.latitude = pos.coords.latitude
+          userPos.longitude = pos.coords.longitude
+
+          center.value[0] = userPos.latitude
+          center.value[1] = userPos.longitude
+       })
+      }
+    }
+
     const filterCityArea = (city,area) => {
       store.dispatch('filterCityArea',[city,area])
     }
@@ -99,7 +114,7 @@ export default {
 
     onMounted(()=> {
         initMaskData(select.city,select.area)
-        console.log(route)
+        getLocation()
     })    
 
     return {
@@ -120,6 +135,8 @@ export default {
       filterMaskData,
       isOpen,
       handleOpen,
+      getLocation,
+      userPos
     }
   }
 }
@@ -132,7 +149,8 @@ export default {
       ref="map"
         :zoom="zoom" 
         :center="newCenter"
-        @move="log('move')" )
+        @move="log('move')" 
+        )
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
@@ -144,7 +162,9 @@ export default {
             h3 
               | 地址: 
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
-  
+      l-marker(:lat-lng='[userPos.latitude,userPos.longitude]' @click='reCenter([userPos.longitude,userPos.latitude])')
+        l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
+        l-tooltip.tooltip(:options="{interactive: true,permanent: true}") 你在這
 
   .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
     .city
@@ -178,7 +198,11 @@ export default {
 @import './css/style.styl'
 .content 
   overflow hidden
-
+  .tooltip
+    font-size 1rem
+  .popup
+    > .leaflet-popup
+      opacity 1
   .map
     flexCenter()
     size()
