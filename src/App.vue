@@ -39,9 +39,12 @@ export default {
     const route = useRoute()
     const store = useStore()
     const zoom = ref(15)
-    const center = ref([20.043293,121.5205653])
+    // const center = ref([20.043293,121.5205653])
+    const center = reactive({
+      latitude: 0,
+      longitude: 0
+    })
     const userPos = reactive({
-      // center: []
       latitude: 0,
       longitude: 0
     })
@@ -81,36 +84,27 @@ export default {
     }
 
     const newCenter = computed(() => { //回傳選擇的藥局座標
-    console.log([userPos.latitude,userPos.longitude]);
-      // return [center.value[0],center.value[1]]
-      return [userPos.latitude,userPos.longitude]
+      return [center.latitude,center.longitude]
     })
 
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      // center.value[0]=coordinates[1]
-      // center.value[1]=coordinates[0]
-      // userPos.center[0]=coordinates[1]
-      // userPos.center[1]=coordinates[0]
-      // console.log(coordinates);
-      userPos.latitude = coordinates[1]
-      userPos.longitude = coordinates[0]
-      // console.log(userPos);
+      center.latitude = coordinates[1]
+      center.longitude = coordinates[0]
     }
 
     const initMaskData = (city,area) => {
       store.dispatch('getMaskAPI',{city,area})
-      // getLocation()
     }
 
     const getLocation = () => {   //抓取目前地理位置
       if ('geolocation' in navigator) {//
-       let possition = navigator.geolocation.getCurrentPosition((pos)=> {
+        let possition = navigator.geolocation.getCurrentPosition((pos)=> {
+          console.log(pos);
+          center.latitude = pos.coords.latitude
+          center.longitude = pos.coords.longitude
           userPos.latitude = pos.coords.latitude
           userPos.longitude = pos.coords.longitude
-
-          // center.value[0] = userPos.latitude
-          // center.value[1] = userPos.longitude
-       })
+        })
       }
     }
 
@@ -124,7 +118,10 @@ export default {
 
     onMounted(()=> {
       initMaskData(select.city,select.area)
-      getLocation()
+      setTimeout(() => {
+        getLocation()
+      }, 1000);
+      
     })    
 
     return {
