@@ -93,13 +93,14 @@ export default {
     }
 
     const initMaskData = (city,area) => {
-      store.dispatch('getMaskAPI',{city,area})
+      store.dispatch('getMaskAPI',{city,area}).then(()=> {
+        getLocation() //取得資料後再取得所在位置
+      })
     }
 
     const getLocation = () => {   //抓取目前地理位置
       if ('geolocation' in navigator) {//
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
-          console.log(pos);
           center.latitude = pos.coords.latitude
           center.longitude = pos.coords.longitude
           userPos.latitude = pos.coords.latitude
@@ -118,10 +119,6 @@ export default {
 
     onMounted(()=> {
       initMaskData(select.city,select.area)
-      setTimeout(() => {
-        getLocation()
-      }, 1000);
-      
     })    
 
     return {
