@@ -39,9 +39,11 @@ export default {
     const route = useRoute()
     const store = useStore()
     const zoom = ref(15)
-    const center = ref([25.043293,121.5205653])
+    const center = ref([20.043293,121.5205653])
     const userPos = reactive({
-
+      // center: []
+      latitude: 0,
+      longitude: 0
     })
     const iconWidth = ref(25)
     const iconHeight = ref(40)
@@ -79,17 +81,25 @@ export default {
     }
 
     const newCenter = computed(() => { //回傳選擇的藥局座標
-      return [center.value[0],center.value[1]]
+    console.log([userPos.latitude,userPos.longitude]);
+      // return [center.value[0],center.value[1]]
+      return [userPos.latitude,userPos.longitude]
     })
 
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      center.value[0]=coordinates[1]
-      center.value[1]=coordinates[0]
+      // center.value[0]=coordinates[1]
+      // center.value[1]=coordinates[0]
+      // userPos.center[0]=coordinates[1]
+      // userPos.center[1]=coordinates[0]
+      // console.log(coordinates);
+      userPos.latitude = coordinates[1]
+      userPos.longitude = coordinates[0]
+      // console.log(userPos);
     }
 
     const initMaskData = (city,area) => {
-      const api = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
-      store.dispatch('getMaskAPI',{api,city,area})
+      store.dispatch('getMaskAPI',{city,area})
+      // getLocation()
     }
 
     const getLocation = () => {   //抓取目前地理位置
@@ -98,8 +108,8 @@ export default {
           userPos.latitude = pos.coords.latitude
           userPos.longitude = pos.coords.longitude
 
-          center.value[0] = userPos.latitude
-          center.value[1] = userPos.longitude
+          // center.value[0] = userPos.latitude
+          // center.value[1] = userPos.longitude
        })
       }
     }
@@ -113,8 +123,8 @@ export default {
     }
 
     onMounted(()=> {
-        initMaskData(select.city,select.area)
-        getLocation()
+      initMaskData(select.city,select.area)
+      getLocation()
     })    
 
     return {
