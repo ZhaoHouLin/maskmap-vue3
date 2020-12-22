@@ -105,6 +105,7 @@ export default {
           center.longitude = pos.coords.longitude
           userPos.latitude = pos.coords.latitude
           userPos.longitude = pos.coords.longitude
+          console.log('hi');
         })
       }
     }
@@ -168,9 +169,10 @@ export default {
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
       l-marker(:lat-lng='[userPos.latitude,userPos.longitude]' @click='reCenter([userPos.longitude,userPos.latitude])')
         l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
-        l-tooltip.tooltip(:options="{interactive: true,permanent: true}") 你在這
+        l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
 
   .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
+    
     .city
       h2 縣市: 
       select(v-model='select.city')
@@ -181,6 +183,7 @@ export default {
       select(v-model='select.area' )
         option 請選擇地區
         option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
+    .user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userPos.longitude,userPos.latitude])')
     .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-up":isOpen}]' @click='handleOpen' )
 
   .list(:class='[{"open": isOpen}]')
@@ -203,17 +206,15 @@ export default {
 .content 
   overflow hidden
   .tooltip
-    font-size 1rem
-  .popup
-    > .leaflet-popup
-      opacity 1
+    font-size 1.5rem
+
   .map
     flexCenter()
     size()
-
+  
   .list-select
     flexCenter()
-    size(30%,auto)
+    size(34%,auto)
     background-color rgba(255,255,255,0.8)
     border-radius 0 0 0 16px
     box-shadow -4px 4px 8px rgba(0,0,0,0.5)
@@ -229,12 +230,16 @@ export default {
       margin 8px
       h2
         margin-right 8px
+
+    .user-loaction
+      font-size 40px
+      padding 8px
     .switch
       flexCenter(center,flex-start)
       top 0
       right 0
       font-size 48px
-      padding 8px 8px
+      padding 8px
       color #222
       transition 0.5s
       cursor pointer
@@ -246,12 +251,12 @@ export default {
     top -100vh
     right 0
     z-index 999
-    size(30%,100vh)
+    size(34%,100vh)
     flexCenter(,,column)
     transition 0.5s
     &.open
       top 10vh
-      size(30%,90vh)
+      size(34%,90vh)
       
     .pharmacy
       cursor pointer
