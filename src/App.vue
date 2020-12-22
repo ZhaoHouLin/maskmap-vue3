@@ -79,6 +79,35 @@ export default {
       return [iconWidth.value, iconHeight.value]
     })
 
+    const distance = (c)=> {
+      let λA = userPos.latitude
+      let ΦA = userPos.longitude
+      let λB = c[0]
+      let ΦB = c[1]
+      if ((λA == λB) && (ΦA == ΦB)) {
+        return 0;
+      }
+      else {
+        let radlat1 = Math.PI * λA/180;
+        let radlat2 = Math.PI * λB/180;
+        let theta = ΦA-ΦB;
+        let radtheta = Math.PI * theta/180;
+        let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344 
+        // if (unit=="N") { dist = dist * 0.8684 }
+        // console.log(λA,ΦA,'&',λB,ΦB ,'result',dist)
+        dist = dist.toFixed(2)
+        return dist<1?dist*1000+' 公尺':dist+' 公里'
+        // return dist
+      }
+    }
+
     const log = (a) => {
       console.log(a)
     }
@@ -105,7 +134,6 @@ export default {
           center.longitude = pos.coords.longitude
           userPos.latitude = pos.coords.latitude
           userPos.longitude = pos.coords.longitude
-          console.log('hi');
         })
       }
     }
@@ -141,7 +169,8 @@ export default {
       isOpen,
       handleOpen,
       getLocation,
-      userPos
+      userPos,
+      distance
     }
   }
 }
@@ -160,13 +189,18 @@ export default {
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
           l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
-          l-popup()
+          l-popup
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童口罩: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
             h3 
               | 地址: 
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
+              h4 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])}}
+            l-tooltip
+              h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+              h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+              h3 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])}} 
       l-marker(:lat-lng='[userPos.latitude,userPos.longitude]' @click='reCenter([userPos.longitude,userPos.latitude])')
         l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
         l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
@@ -234,6 +268,7 @@ export default {
     .user-loaction
       font-size 40px
       padding 8px
+      cursor pointer
     .switch
       flexCenter(center,flex-start)
       top 0
