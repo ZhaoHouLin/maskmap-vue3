@@ -4,6 +4,7 @@ import Leaflet from 'leaflet'
 import { onMounted, ref, reactive, computed ,watch, onUpdated} from 'vue'
 import {useStore} from 'vuex'
 import {useRoute} from 'vue-router'
+import {apiGetLatLonDistance} from '../src/api'
 import {
   LMap,
   LIcon,
@@ -39,7 +40,7 @@ export default {
     const route = useRoute()
     const store = useStore()
     const zoom = ref(15)
-    // const center = ref([20.043293,121.5205653])
+
     const center = reactive({
       latitude: 0,
       longitude: 0
@@ -82,30 +83,7 @@ export default {
     const distance = (c)=> {
       let λA = userPos.latitude
       let ΦA = userPos.longitude
-      let λB = c[0]
-      let ΦB = c[1]
-      if ((λA == λB) && (ΦA == ΦB)) {
-        return 0;
-      }
-      else {
-        let radlat1 = Math.PI * λA/180;
-        let radlat2 = Math.PI * λB/180;
-        let theta = ΦA-ΦB;
-        let radtheta = Math.PI * theta/180;
-        let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        if (dist > 1) {
-            dist = 1;
-        }
-        dist = Math.acos(dist);
-        dist = dist * 180/Math.PI;
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344 
-        // if (unit=="N") { dist = dist * 0.8684 }
-        // console.log(λA,ΦA,'&',λB,ΦB ,'result',dist)
-        dist = dist.toFixed(2)
-        return dist<1?dist*1000+' 公尺':dist+' 公里'
-        // return dist
-      }
+      return apiGetLatLonDistance(λA,ΦA,c)
     }
 
     const log = (a) => {
@@ -119,6 +97,7 @@ export default {
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
       center.latitude = coordinates[1]
       center.longitude = coordinates[0]
+      console.log(center);
     }
 
     const initMaskData = (city,area) => {
