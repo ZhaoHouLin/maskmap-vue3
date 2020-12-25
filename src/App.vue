@@ -73,7 +73,7 @@ export default {
     })
 
     const actIconUrl = computed(()=> {
-        return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`
+      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`
     })
 
     const iconSize = computed(()=> {
