@@ -51,7 +51,7 @@ export default {
     })
     const iconWidth = ref(25)
     const iconHeight = ref(40)
-    const isOpen =ref(false)
+    const isOpen = ref(false)
 
     const maskData = computed(()=> {
       return store.getters.maskData
@@ -107,7 +107,7 @@ export default {
     }
 
     const getLocation = () => {   //抓取目前地理位置
-      if ('geolocation' in navigator) {//
+      if ('geolocation' in navigator) {
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
           center.latitude = pos.coords.latitude
           center.longitude = pos.coords.longitude
@@ -167,7 +167,8 @@ export default {
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
-          l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
+          //- l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
+          l-icon(:icon-url="distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
           l-popup
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
@@ -175,17 +176,16 @@ export default {
             h3 
               | 地址: 
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
-              h4 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])}}
+              h4 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])* 1000 + '公尺'}}
             l-tooltip
               h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
               h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
-              h3 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])}} 
+              h3 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])* 1000 + '公尺'}} 
       l-marker(:lat-lng='[userPos.latitude,userPos.longitude]' @click='reCenter([userPos.longitude,userPos.latitude])')
         l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
         l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
 
   .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
-    
     .city
       h2 縣市: 
       select(v-model='select.city')
@@ -205,13 +205,14 @@ export default {
       @click='reCenter(item.geometry.coordinates)'
       :to='`/${item.properties.name}`'
       )
-  
         h3 {{ item.properties.name }}
         p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
         p 
           | 地址: 
           a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
+
       router-view
+
 </template>
 
 <style lang="stylus" scoped>
