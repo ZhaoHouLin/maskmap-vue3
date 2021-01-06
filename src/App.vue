@@ -41,17 +41,18 @@ export default {
     const store = useStore()
     const zoom = ref(15)
 
-    const center = reactive({
-      latitude: 0,
-      longitude: 0
-    })
-    const userPos = reactive({
-      latitude: 0,
-      longitude: 0
-    })
     const iconWidth = ref(25)
     const iconHeight = ref(40)
     const isOpen = ref(false)
+
+
+    const centerCoordinatesData = computed(()=> {
+      return store.getters.centerCoordinatesData
+    })
+
+    const userCoordinatesData = computed(()=> {
+      return store.getters.userCoordinatesData
+    })
 
     const maskData = computed(()=> {
       return store.getters.maskData
@@ -81,23 +82,19 @@ export default {
     })
 
     const distance = (λB, ΦB)=> {
-      let λA = userPos.latitude
-      let ΦA = userPos.longitude
+      let λA = store.getters.userCoordinatesData.latitude
+      let ΦA = store.getters.userCoordinatesData.longitude
       return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
     }
 
     const log = (a) => {
-      console.log(a)
+      // console.log(a)
     }
 
-    const newCenter = computed(() => { //回傳選擇的藥局座標
-      return [center.latitude,center.longitude]
-    })
-
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      center.latitude = coordinates[1]
-      center.longitude = coordinates[0]
-      console.log(center);
+      let latitude  = coordinates[1]
+      let longitude  = coordinates[0]
+      store.dispatch('commitCenterCoordinates',{latitude,longitude})
     }
 
     const initMaskData = (city,area) => {
@@ -109,10 +106,9 @@ export default {
     const getLocation = () => {   //抓取目前地理位置
       if ('geolocation' in navigator) {
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
-          center.latitude = pos.coords.latitude
-          center.longitude = pos.coords.longitude
-          userPos.latitude = pos.coords.latitude
-          userPos.longitude = pos.coords.longitude
+          let latitude = pos.coords.latitude
+          let longitude = pos.coords.longitude
+          store.dispatch('commitUserCoordinates',{latitude,longitude})
         })
       }
     }
@@ -140,16 +136,16 @@ export default {
       actIconUrl,
       iconSize,
       log,
-      center,
       reCenter,
-      newCenter,
       filterCityArea,
       filterMaskData,
       isOpen,
       handleOpen,
       getLocation,
-      userPos,
-      distance
+      distance,
+      centerCoordinatesData,
+      userCoordinatesData,
+
     }
   }
 }
@@ -161,7 +157,7 @@ export default {
     l-map(
       ref="map"
         :zoom="zoom" 
-        :center="newCenter"
+        :center="[centerCoordinatesData.latitude,centerCoordinatesData.longitude]"
         @move="log('move')" 
         )
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
@@ -180,8 +176,8 @@ export default {
             l-tooltip
               h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
               h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
-              h3 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])* 1000 + '公尺'}} 
-      l-marker(:lat-lng='[userPos.latitude,userPos.longitude]' @click='reCenter([userPos.longitude,userPos.latitude])')
+              h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
+      l-marker(:lat-lng='[userCoordinatesData.latitude,userCoordinatesData.longitude]' @click='reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
         l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
         l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
 
@@ -196,7 +192,7 @@ export default {
       select(v-model='select.area' )
         option 請選擇地區
         option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
-    .user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userPos.longitude,userPos.latitude])')
+    .user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
     .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-up":isOpen}]' @click='handleOpen' )
 
   .list(:class='[{"open": isOpen}]')
