@@ -4,6 +4,7 @@ export default createStore({
   state: {
     maskData: [],
     filterMaskData: [],
+    nearPharmacyData:[],
     centerCoordinates: {
       latitude: 0,
       longitude: 0
@@ -21,6 +22,9 @@ export default createStore({
     storeCenterCoordinates(state, payload) {
       state.centerCoordinates = payload
     },
+    storeNearPharmacy(state, payload) {
+      state.nearPharmacyData.push(payload)
+    },
     storeMaskData(state,payload) {
       state.maskData = payload
     },
@@ -35,7 +39,19 @@ export default createStore({
     commitUserCoordinates({ commit }, payload) {
       commit('storeUserCoordinates',payload)
     },
-
+    commitNearPharmacy({ state,commit }) {
+      state.nearPharmacyData= []
+      let λA = state.userCoordinates.latitude
+      let ΦA = state.userCoordinates.longitude
+      state.maskData.filter((item) => {
+        let λB = item.geometry.coordinates[1]
+        let ΦB = item.geometry.coordinates[0]
+        let distance = apiGetLatLonDistance(λA, ΦA, λB, ΦB)
+        if (distance < 1) {
+          commit('storeNearPharmacy', item)
+        }
+      })
+    },
     async getMaskAPI({ commit }, payload) {
       try {
         const res = await apiGetMaskData()
@@ -50,12 +66,9 @@ export default createStore({
         console.error(error)
       }
     },
-    filterCityArea({ commit }, payload) {
-      this.state.filterMaskData = []
-      this.state.maskData.filter((item)=> {
-        // console.log(item.geometry.coordinates);
-        // let λB = item.geometry.coordinates[1]
-        // let ΦB = item.geometry.coordinates[0]
+    filterCityArea({ state,commit }, payload) {
+      state.filterMaskData = []
+      state.maskData.filter((item)=> {
         if(item.properties.county === payload[0] && item.properties.town === payload[1]) {
           commit('storeFilterMaskData',item)
         }
@@ -68,6 +81,9 @@ export default createStore({
     },
     filterMaskData(state) {
       return state.filterMaskData
+    },
+    nearPharmacyData(state) {
+      return state.nearPharmacyData
     },
     centerCoordinatesData(state) {
       return state.centerCoordinates

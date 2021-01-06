@@ -62,6 +62,10 @@ export default {
       return store.getters.filterMaskData
     })
     
+    const nearPharmacyData = computed(()=> {
+      return store.getters.nearPharmacyData
+    })
+
     const select = reactive(
       {
         city: '臺北市',
@@ -70,7 +74,7 @@ export default {
     )
 
     const iconUrl = computed(()=> {
-      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png`
+      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
     })
 
     const actIconUrl = computed(()=> {
@@ -94,6 +98,7 @@ export default {
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
       let latitude  = coordinates[1]
       let longitude  = coordinates[0]
+      console.log(latitude,longitude);
       store.dispatch('commitCenterCoordinates',{latitude,longitude})
     }
 
@@ -108,7 +113,11 @@ export default {
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
           let latitude = pos.coords.latitude
           let longitude = pos.coords.longitude
+          // let latitude = 25.050354
+          // let longitude = 121.510788
           store.dispatch('commitUserCoordinates',{latitude,longitude})
+          store.dispatch('commitNearPharmacy')
+          console.log('hi',store.getters.nearPharmacyData);
         })
       }
     }
@@ -145,6 +154,7 @@ export default {
       distance,
       centerCoordinatesData,
       userCoordinatesData,
+      nearPharmacyData
 
     }
   }
@@ -163,8 +173,8 @@ export default {
       l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
-          //- l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
-          l-icon(:icon-url="distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
+          l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
+          //- l-icon(:icon-url="distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
           l-popup
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
@@ -172,14 +182,30 @@ export default {
             h3 
               | 地址: 
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
-              h4 距離: {{distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])* 1000 + '公尺'}}
+              h4 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}}
             l-tooltip
               h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
               h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
               h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
+              
       l-marker(:lat-lng='[userCoordinatesData.latitude,userCoordinatesData.longitude]' @click='reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
         l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
         l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
+      .lMarker(v-for='(item,key) in nearPharmacyData')
+        l-marker(:key='key' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
+          l-icon(:icon-url="`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png`" :icon-size="iconSize" )
+          l-popup
+            h2 {{item.properties.name}}
+            h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+            h3 兒童口罩: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+            h3 
+              | 地址: 
+              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
+              h4 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}}
+            l-tooltip
+              h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+              h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+              h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
 
   .list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
     .city
