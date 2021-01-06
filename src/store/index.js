@@ -12,7 +12,8 @@ export default createStore({
     userCoordinates: {
       latitude: 0,
       longitude: 0
-    }
+    },
+    isOpen: false
   },
   mutations: {
     storeUserCoordinates(state,payload) {
@@ -30,6 +31,9 @@ export default createStore({
     },
     storeFilterMaskData(state,payload) {
       state.filterMaskData.push(payload)
+    },
+    storeIsOpen(state) {
+      state.isOpen = !state.isOpen
     }
   },
   actions: {
@@ -73,6 +77,9 @@ export default createStore({
           commit('storeFilterMaskData',item)
         }
       })
+    },
+    commitIsOpen({ commit }) {
+      commit('storeIsOpen')
     }
   },
   getters: {
@@ -90,6 +97,9 @@ export default createStore({
     },
     userCoordinatesData(state) {
       return state.userCoordinates
+    },
+    isOpen(state) {
+      return state.isOpen
     }
   }
 })

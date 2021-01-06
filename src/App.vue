@@ -43,9 +43,7 @@ export default {
 
     const iconWidth = ref(25)
     const iconHeight = ref(40)
-    const isOpen = ref(false)
-
-
+   
     const centerCoordinatesData = computed(()=> {
       return store.getters.centerCoordinatesData
     })
@@ -64,6 +62,10 @@ export default {
     
     const nearPharmacyData = computed(()=> {
       return store.getters.nearPharmacyData
+    })
+
+    const isOpen = computed(()=> {
+      return store.getters.isOpen
     })
 
     const select = reactive(
@@ -113,11 +115,8 @@ export default {
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
           let latitude = pos.coords.latitude
           let longitude = pos.coords.longitude
-          // let latitude = 25.050354
-          // let longitude = 121.510788
           store.dispatch('commitUserCoordinates',{latitude,longitude})
           store.dispatch('commitNearPharmacy')
-          console.log('hi',store.getters.nearPharmacyData);
         })
       }
     }
@@ -127,7 +126,7 @@ export default {
     }
 
     const handleOpen = () => {
-      isOpen.value = !isOpen.value
+      store.dispatch('commitIsOpen')
     }
 
     onMounted(()=> {
