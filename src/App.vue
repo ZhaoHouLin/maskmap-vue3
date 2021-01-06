@@ -80,10 +80,10 @@ export default {
       return [iconWidth.value, iconHeight.value]
     })
 
-    const distance = (c)=> {
+    const distance = (λB, ΦB)=> {
       let λA = userPos.latitude
       let ΦA = userPos.longitude
-      return apiGetLatLonDistance(λA,ΦA,c)
+      return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
     }
 
     const log = (a) => {
@@ -168,7 +168,7 @@ export default {
       .lMarker(v-for='(item,key) in filterMaskData')
         l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
           //- l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
-          l-icon(:icon-url="distance([item.geometry.coordinates[1],item.geometry.coordinates[0]])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
+          l-icon(:icon-url="distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
           l-popup
             h2 {{item.properties.name}}
             h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}

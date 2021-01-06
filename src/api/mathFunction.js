@@ -1,6 +1,4 @@
-const LatLonDistance = (λA, ΦA ,c) => {   //計算經緯度距離
-  let λB = c[0]
-  let ΦB = c[1]
+const LatLonDistance = (λA, ΦA, λB, ΦB) => {   //計算經緯度距離
   if ((λA == λB) && (ΦA == ΦB)) {
     return 0;
   }
