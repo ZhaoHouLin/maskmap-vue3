@@ -1,25 +1,11 @@
 <script>
 import cityName from '../assets/cityName.json'
-import { onMounted, ref, reactive, computed, onUpdated} from 'vue'
-import {useStore} from 'vuex'
+import { apiGetCommonFn } from '../api'
+
 export default {
   setup() {
-    const store = useStore()
 
-    const isOpen = computed(()=> {
-      return store.getters.isOpen
-    })
-
-    const filterMaskData = computed(()=> {
-      return store.getters.filterMaskData
-    })
-
-    const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      let latitude  = coordinates[1]
-      let longitude  = coordinates[0]
-      console.log(latitude,longitude);
-      store.dispatch('commitCenterCoordinates',{latitude,longitude})
-    }
+    const {isOpen,filterMaskData,reCenter} = apiGetCommonFn()
 
     return {
       isOpen,

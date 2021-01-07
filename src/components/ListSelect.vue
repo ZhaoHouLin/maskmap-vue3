@@ -1,15 +1,20 @@
 <script>
 import cityName from '../assets/cityName.json'
 import { onMounted, ref, reactive, computed, onUpdated} from 'vue'
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
+import { apiGetCommonFn } from '../api'
 export default {
   setup() {
     
     const store = useStore()
 
-    const selectList = computed(()=> {
-      return store.getters.selectList
-    })
+    const {
+      selectList,
+      isOpen,
+      filterMaskData,
+      userCoordinatesData,
+      reCenter
+    } = apiGetCommonFn()
 
     const initMaskData = (city,area) => {
       store.dispatch('getMaskAPI',{city,area}).then(()=> {
@@ -32,27 +37,9 @@ export default {
       }
     }
 
-    const filterMaskData = computed(()=> {
-      return store.getters.filterMaskData
-    })
-
-    const userCoordinatesData = computed(()=> {
-      return store.getters.userCoordinatesData
-    })
-
     const handleOpen = () => {
       store.dispatch('commitIsOpen')
     }
-
-    const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      let latitude  = coordinates[1]
-      let longitude  = coordinates[0]
-      store.dispatch('commitCenterCoordinates',{latitude,longitude})
-    }
-
-    const isOpen = computed(()=> {
-      return store.getters.isOpen
-    })
 
     onMounted(()=> {
       initMaskData(selectList.city,selectList.area)

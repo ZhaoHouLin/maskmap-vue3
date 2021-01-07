@@ -1,8 +1,9 @@
 <script>
 import Leaflet from 'leaflet'
-import { onMounted, ref, reactive, computed, onUpdated} from 'vue'
-import {useStore} from 'vuex'
-import {apiGetLatLonDistance} from '../api'
+import { onMounted, ref, reactive, computed} from 'vue'
+import { useStore } from 'vuex'
+import { apiGetLatLonDistance } from '../api'
+import { apiGetCommonFn } from '../api'
 
 import {
   LMap,
@@ -37,30 +38,18 @@ export default {
 
     const store = useStore()
 
-    const selectList = computed(()=> {
-      return store.getters.selectList
-    })
+    const { 
+      selectList,
+      filterMaskData,
+      nearPharmacyData,
+      centerCoordinatesData ,
+      userCoordinatesData,
+      reCenter
+    } = apiGetCommonFn()
 
     const zoom = ref(15)
     const iconWidth = ref(25)
     const iconHeight = ref(40)
-
-    const filterMaskData = computed(()=> {
-      return store.getters.filterMaskData
-    })
-
-    const nearPharmacyData = computed(()=> {
-      return store.getters.nearPharmacyData
-    })
-
-    const centerCoordinatesData = computed(()=> {
-      return store.getters.centerCoordinatesData
-    })
-
-    const userCoordinatesData = computed(()=> {
-      return store.getters.userCoordinatesData
-    })
-
     const iconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
     })
@@ -72,12 +61,6 @@ export default {
     const iconSize = computed(()=> {
       return [iconWidth.value, iconHeight.value]
     })
-
-    const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
-      let latitude  = coordinates[1]
-      let longitude  = coordinates[0]
-      store.dispatch('commitCenterCoordinates',{latitude,longitude})
-    }
 
     const distance = (λB, ΦB)=> {
       let λA = store.getters.userCoordinatesData.latitude
