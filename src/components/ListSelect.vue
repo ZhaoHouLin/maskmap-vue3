@@ -7,12 +7,9 @@ export default {
     
     const store = useStore()
 
-    const select = reactive(
-      {
-        city: '臺北市',
-        area: '中正區',
-      }
-    )
+    const selectList = computed(()=> {
+      return store.getters.selectList
+    })
 
     const initMaskData = (city,area) => {
       store.dispatch('getMaskAPI',{city,area}).then(()=> {
@@ -50,7 +47,6 @@ export default {
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
       let latitude  = coordinates[1]
       let longitude  = coordinates[0]
-      console.log(latitude,longitude);
       store.dispatch('commitCenterCoordinates',{latitude,longitude})
     }
 
@@ -59,14 +55,14 @@ export default {
     })
 
     onMounted(()=> {
-      initMaskData(select.city,select.area)
+      initMaskData(selectList.city,selectList.area)
     }) 
 
     return {
       filterMaskData,
       filterCityArea,
       cityName,
-      select,
+      selectList,
       handleOpen,
       isOpen,
       getLocation,
@@ -78,17 +74,17 @@ export default {
 </script>
 
 <template lang='pug'>
-.list-select(@change='filterCityArea(select.city,select.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
+.list-select(@change='filterCityArea(selectList.city,selectList.area), reCenter(filterMaskData[0].geometry.coordinates)' :class='[{"open": isOpen}]')
   .city
     h2 縣市: 
-    select(v-model='select.city')
+    select(v-model='selectList.city')
       option 請選擇縣市
       option(v-for='city in cityName' :value='city.CityName' :key='city.CityName') {{city.CityName}}
   .area
     h2 地區: 
-    select(v-model='select.area' )
+    select(v-model='selectList.area' )
       option 請選擇地區
-      option(v-for='area in cityName.find((city)=>city.CityName===select.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
+      option(v-for='area in cityName.find((city)=>city.CityName===selectList.city).AreaList' :value='area.AreaName' :key='area.AreaName' ) {{area.AreaName}}
   .user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
   .switch(:class='["fas",{"fa-chevron-down":!isOpen},{"fa-chevron-up":isOpen}]' @click='handleOpen' )
 </template>

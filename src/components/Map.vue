@@ -37,12 +37,9 @@ export default {
 
     const store = useStore()
 
-    const select = reactive(
-      {
-        city: '臺北市',
-        area: '中正區',
-      }
-    )
+    const selectList = computed(()=> {
+      return store.getters.selectList
+    })
 
     const zoom = ref(15)
     const iconWidth = ref(25)
@@ -79,7 +76,6 @@ export default {
     const reCenter = (coordinates) => { //選擇藥局後地圖自動移動中心
       let latitude  = coordinates[1]
       let longitude  = coordinates[0]
-      console.log(latitude,longitude);
       store.dispatch('commitCenterCoordinates',{latitude,longitude})
     }
 
@@ -94,7 +90,7 @@ export default {
     }
 
     return {
-      select,
+      selectList,
       filterMaskData,
       nearPharmacyData,
       centerCoordinatesData,
@@ -123,7 +119,7 @@ export default {
   )
     l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     .lMarker(v-for='(item,key) in filterMaskData')
-      l-marker( :key='key' v-if='item.properties.county === select.city && item.properties.town === select.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
+      l-marker( :key='key' v-if='item.properties.county === selectList.city && item.properties.town === selectList.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
         l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
         //- l-icon(:icon-url="distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
         l-popup

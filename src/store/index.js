@@ -2,6 +2,10 @@ import { createStore } from 'vuex'
 import { apiGetMaskData, apiGetLatLonDistance} from '../api'
 export default createStore({
   state: {
+    selectList: {
+      city: '臺北市',
+      area: '中正區',
+    },
     maskData: [],
     filterMaskData: [],
     nearPharmacyData:[],
@@ -83,6 +87,9 @@ export default createStore({
     }
   },
   getters: {
+    selectList(state) {
+      return state.selectList
+    },
     maskData(state) {
       return state.maskData
     },
