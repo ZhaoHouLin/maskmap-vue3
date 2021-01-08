@@ -20,32 +20,32 @@ export default createStore({
     isOpen: false
   },
   mutations: {
-    storeUserCoordinates(state,payload) {
+    stateUserCoordinates(state,payload) {
       state.centerCoordinates = payload
       state.userCoordinates = payload
     },
-    storeCenterCoordinates(state, payload) {
+    stateCenterCoordinates(state, payload) {
       state.centerCoordinates = payload
     },
-    storeNearPharmacy(state, payload) {
+    stateNearPharmacy(state, payload) {
       state.nearPharmacyData.push(payload)
     },
-    storeMaskData(state,payload) {
+    stateMaskData(state,payload) {
       state.maskData = payload
     },
-    storeFilterMaskData(state,payload) {
+    stateFilterMaskData(state,payload) {
       state.filterMaskData.push(payload)
     },
-    storeIsOpen(state) {
+    stateIsOpen(state) {
       state.isOpen = !state.isOpen
     }
   },
   actions: {
     commitCenterCoordinates({ commit }, payload) {
-      commit('storeCenterCoordinates', payload)
+      commit('stateCenterCoordinates', payload)
     },
     commitUserCoordinates({ commit }, payload) {
-      commit('storeUserCoordinates',payload)
+      commit('stateUserCoordinates',payload)
     },
     commitNearPharmacy({ state,commit }) {
       state.nearPharmacyData= []
@@ -56,7 +56,7 @@ export default createStore({
         let ΦB = item.geometry.coordinates[0]
         let distance = apiGetLatLonDistance(λA, ΦA, λB, ΦB)
         if (distance < 1) {
-          commit('storeNearPharmacy', item)
+          commit('stateNearPharmacy', item)
         }
       })
     },
@@ -66,10 +66,10 @@ export default createStore({
         this.state.filterMaskData = []
         res.data.features.filter((item) => {
           if (item.properties.county === payload.city && item.properties.town === payload.area) {
-            commit('storeFilterMaskData', item)
+            commit('stateFilterMaskData', item)
           }
         })
-        commit('storeMaskData', res.data.features)
+        commit('stateMaskData', res.data.features)
       } catch (error) {
         console.error(error)
       }
@@ -78,12 +78,12 @@ export default createStore({
       state.filterMaskData = []
       state.maskData.filter((item)=> {
         if(item.properties.county === payload[0] && item.properties.town === payload[1]) {
-          commit('storeFilterMaskData',item)
+          commit('stateFilterMaskData',item)
         }
       })
     },
     commitIsOpen({ commit }) {
-      commit('storeIsOpen')
+      commit('stateIsOpen')
     }
   },
   getters: {
