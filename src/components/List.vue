@@ -36,6 +36,7 @@ export default {
 @import '../css/style.styl'
 .list
   background-color rgba(255,255,255,0.8)
+  border-radius 16px 0px 0 16px
   position absolute
   top -100vh
   right 0
@@ -45,7 +46,8 @@ export default {
   transition 0.5s
   &.open
     top 10vh
-    size(34%,90vh)
+    size(34%,calc(90vh - 12px))
+    box-shadow -2px 2px 12px rgba(0,0,0,0.5)
     
   .pharmacy
     cursor pointer

@@ -26,12 +26,9 @@ export default {
 
 <template lang='pug'>
 .content
-
   Map
   ListSelect
-  List
-
-  
+  List  
 
 </template>
 
