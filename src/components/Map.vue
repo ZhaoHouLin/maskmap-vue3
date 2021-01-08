@@ -50,12 +50,17 @@ export default {
     const zoom = ref(15)
     const iconWidth = ref(25)
     const iconHeight = ref(40)
+
     const iconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
     })
 
     const actIconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`
+    })
+
+    const nearIconUrl = computed(()=> {
+      return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png`
     })
 
     const iconSize = computed(()=> {
@@ -81,6 +86,7 @@ export default {
       zoom,
       iconUrl,
       actIconUrl,
+      nearIconUrl,
       iconSize,
       iconWidth,
       iconHeight,
@@ -103,8 +109,7 @@ export default {
     l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     .lMarker(v-for='(item,key) in filterMaskData')
       l-marker( :key='key' v-if='item.properties.county === selectList.city && item.properties.town === selectList.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
-        l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:iconUrl" :icon-size="iconSize" )
-        //- l-icon(:icon-url="distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?actIconUrl:iconUrl" :icon-size="iconSize" )
+        l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?nearIconUrl:iconUrl" :icon-size="iconSize" )
         l-popup
           h2 {{item.properties.name}}
           h3 成人口罩: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
