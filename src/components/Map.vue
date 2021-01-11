@@ -16,6 +16,7 @@ import {
   LPolyline,
   LPolygon,
   LRectangle,
+  LControlZoom
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -32,6 +33,7 @@ export default {
     LPolyline,
     LPolygon,
     LRectangle,
+    LControlZoom
   },
 
   setup() {
@@ -92,7 +94,7 @@ export default {
       iconHeight,
       log,
       distance,
-      reCenter
+      reCenter,
     }
   }
 }
@@ -105,7 +107,10 @@ export default {
     :zoom="zoom" 
     :center="[centerCoordinatesData.latitude,centerCoordinatesData.longitude]"
     @move="log('move')" 
+    :options='{zoomControl: false}'
   )
+    
+    l-control-zoom(position='bottomright' zoomControl='false')
     l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     .lMarker(v-for='(item,key) in filterMaskData')
       l-marker( :key='key' v-if='item.properties.county === selectList.city && item.properties.town === selectList.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
@@ -150,5 +155,7 @@ export default {
   flexCenter()
   size()
 
-  
+.leaflet-control-container
+  .leaflet-top.leaflet-left
+    display none
 </style>
