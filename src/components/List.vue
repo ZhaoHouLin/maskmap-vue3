@@ -71,7 +71,7 @@ export default {
     size(100%,90vh)
     &.open
       top 10vh
-      size(100%,90vh)
+      size(100%,calc(90vh - 12px))
 
 @media screen and (max-width 1024px)
   .list

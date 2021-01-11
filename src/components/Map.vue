@@ -155,7 +155,4 @@ export default {
   flexCenter()
   size()
 
-.leaflet-control-container
-  .leaflet-top.leaflet-left
-    display none
 </style>
