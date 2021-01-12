@@ -1,16 +1,23 @@
 <script>
 import cityName from '../assets/cityName.json'
-import { apiGetCommonFn } from '../api'
+import { useStore } from 'vuex'
+import { apiGetCommonFn,apiGetLatLonDistance } from '../api'
 
 export default {
   setup() {
-
+    const store = useStore()
     const {isOpen,filterMaskData,reCenter} = apiGetCommonFn()
+    const distance = (λB, ΦB)=> {
+      let λA = store.getters.userCoordinatesData.latitude
+      let ΦA = store.getters.userCoordinatesData.longitude
+      return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
+    }
 
     return {
       isOpen,
       filterMaskData,
-      reCenter
+      reCenter,
+      distance
     }
   }
 }
@@ -19,51 +26,93 @@ export default {
 <template lang='pug'>
 .list(:class='[{"open": isOpen}]')
   .pharmacy
-    router-link.info(v-for='(item,key) in filterMaskData' 
+    router-link.item(v-for='(item,key) in filterMaskData' 
     @click='reCenter(item.geometry.coordinates)'
     :to='`/${item.properties.name}`'
     )
-      h3 {{ item.properties.name }}
-      p 成人口罩: {{ item.properties.mask_adult}} | 兒童口罩: {{ item.properties.mask_child}}
-      p 
-        | 地址: 
-        a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
+      .title
+        i.fas.fa-pills
+        h3 {{item.properties.name}}
+      .mask-quantity
+        .mask-adult
+          h4 成人口罩 
+          h3 {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+        .mask-child
+          h4 兒童口罩
+          h3 {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+      .info 
+        h3 {{item.properties.phone}} 
+        .address
+          i.fas.fa-map-marked-alt
+          a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
+        .distance
+          h4 距離您 
+          h3(:class='[{"green": distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000<1000 }]') {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 }} 
+          h4 公尺
+
+        h3 備註: 
+          h4 {{item.properties.note}}
+        h3 更新時間: {{item.properties.updated}}
+
     router-view
 
 </template>
 
-<style lang='stylus' scoped>
+<style lang='stylus' >
 @import '../css/style.styl'
 .list
-  background-color rgba(255,255,255,0.8)
+  background-color transparent
   border-radius 16px 0px 0 16px
   position absolute
-  top -100vh
-  right 0
-  z-index 999
-  size(34%,100vh)
-  flexCenter(,,column)
+  top 10vh
+  right -100vh
   transition 0.5s
+  z-index 999
+  size(30%,100vh)
+  flexCenter(,,column)
+
   &.open
-    top 10vh
-    size(34%,calc(90vh - 12px))
-    box-shadow -2px 2px 12px rgba(0,0,0,0.5)
+    right 0vh
+    size(30%,calc(90vh - 12px))
     
   .pharmacy
     cursor pointer
     size()
-    flexCenter(flex-start,center)
-    flex-direction column
+    flexCenter(flex-start,center,column)
     overflow auto
-
-    .info
+    
+    .item
+      // flexCenter(flex-start,center,column)
+      background-color rgba(255,255,255,0.9)
       color #222
-      size(100%,auto)
-      padding 4px 16px
+      size(100%,120px)
+      padding 0
+      margin 0
+      padding-bottom 16px
+      margin-bottom 8px
+      border-radius 16px
+      
       &:hover
-        background-color #C8FACC
+        box-shadow 0px 2px 4px rgba(0,0,0,0.5)
+        background-color #fff
       &.router-link-active
-        background-color #C8FACC
+        height 300px
+      .info
+        flxeCenter()
+        .address
+          i
+            color color-green
+            margin-right 8px
+          a
+            color color-blue
+        .distance
+          h4,h3
+            margin-right 4px
+        h3
+          h4
+            display inline-block
+        
+      
 
 @media screen and (max-width 420px)
   .list

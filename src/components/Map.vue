@@ -2,8 +2,7 @@
 import Leaflet from 'leaflet'
 import { onMounted, ref, reactive, computed} from 'vue'
 import { useStore } from 'vuex'
-import { apiGetLatLonDistance } from '../api'
-import { apiGetCommonFn } from '../api'
+import { apiGetCommonFn,apiGetLatLonDistance } from '../api'
 
 import {
   LMap,
@@ -185,6 +184,8 @@ export default {
 <style lang='stylus'>
 @import '../css/style.styl'
 
+
+
 .map
   flexCenter()
   size()
@@ -210,7 +211,7 @@ export default {
   border-radius 16px 16px 0 0
   flexCenter(flex-start,center,)
   size(100%,auto)
-  background-color #1bd641
+  background-color color-green
   padding 8px 16px
   i 
     font-size 16px
@@ -232,9 +233,9 @@ export default {
       color #fff
       
   .mask-adult
-    background-color #30BCED
+    background-color color-blue
   .mask-child 
-    background-color #ffcd3a
+    background-color color-yellow
 
 .info
   margin-top 8px
@@ -245,7 +246,7 @@ export default {
       font-size 16px
       font-weight 600
     i
-      color #1bd641
+      color color-green
       margin-right 8px
     h4
       display inline-block
@@ -264,6 +265,6 @@ export default {
       color red
       font-size 24px
       &.green
-        color #1bd641
+        color color-green
 
 </style>
