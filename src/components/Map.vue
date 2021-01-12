@@ -128,9 +128,10 @@ export default {
               h3 {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
           .info 
             h2 {{item.properties.phone}} 
-              //- h4 {{item.properties.phone}}
             h2
+              i.fas.fa-map-marked-alt
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
+
             .distance
               h2 距離您 
               h3(:class='[{"green": distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000<1000 }]') {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 }} 
@@ -161,7 +162,10 @@ export default {
           .info 
             h2 {{item.properties.phone}} 
             h2
-              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }} 
+              i.fas.fa-map-marked-alt
+              a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
+              
+
             .distance
               h2 距離您 
               h3(:class='[{"green": distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000<1000 }]') {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 }} 
@@ -185,9 +189,13 @@ export default {
   flexCenter()
   size()
 
-a.leaflet-popup-close-button
-  font-size 32px
-  color #000
+.leaflet-container a.leaflet-popup-close-button
+  font-size 24px
+  color #fff
+  top 12px
+  right 16px
+  &:hover
+    color #222
 
 .leaflet-popup-content-wrapper
   size(auto,auto)
@@ -236,6 +244,9 @@ a.leaflet-popup-close-button
     a
       font-size 16px
       font-weight 600
+    i
+      color #1bd641
+      margin-right 8px
     h4
       display inline-block
       font-size 16px
