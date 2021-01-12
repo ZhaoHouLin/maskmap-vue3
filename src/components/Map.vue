@@ -184,8 +184,6 @@ export default {
 <style lang='stylus'>
 @import '../css/style.styl'
 
-
-
 .map
   flexCenter()
   size()

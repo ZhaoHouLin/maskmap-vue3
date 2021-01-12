@@ -58,7 +58,7 @@ export default {
 
 </template>
 
-<style lang='stylus' >
+<style lang='stylus' scoped>
 @import '../css/style.styl'
 .list
   background-color transparent
@@ -85,32 +85,48 @@ export default {
       // flexCenter(flex-start,center,column)
       background-color rgba(255,255,255,0.9)
       color #222
-      size(100%,120px)
+      size(100%,200px)
       padding 0
       margin 0
       padding-bottom 16px
       margin-bottom 8px
       border-radius 16px
+      transition 0.5s
       
       &:hover
         box-shadow 0px 2px 4px rgba(0,0,0,0.5)
         background-color #fff
+
       &.router-link-active
-        height 300px
+        height auto
+        .info
+          .distance
+            opacity 1 
+      .title
+        h3
+          color #fff
+          margin-left 8px
+
       .info
+        
         flxeCenter()
         .address
           i
             color color-green
             margin-right 8px
           a
+            font-weight 900
             color color-blue
         .distance
+          opacity 0
           h4,h3
             margin-right 4px
+          h4 
+            font-weight normal
         h3
           h4
             display inline-block
+            font-weight 500
         
       
 

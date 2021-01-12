@@ -59,6 +59,7 @@ export default {
     font-size 1.5rem
 
   .user-loaction
+    color red
     left 0
     top 0
     position absolute
@@ -74,7 +75,7 @@ export default {
     right 0
     font-size 32px
     padding 8px
-    color #222
+    color color-blue
     transition 0.5s
     cursor pointer
     z-index 999
