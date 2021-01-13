@@ -189,6 +189,7 @@ export default {
             h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
             h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
+            
 .user-loaction(:class='["fas","fa-map-marker-alt"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
 </template>
 
@@ -285,4 +286,5 @@ export default {
   padding 8px
   cursor pointer
   z-index 9999
+
 </style>

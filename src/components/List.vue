@@ -64,15 +64,15 @@ export default {
   background-color transparent
   border-radius 16px 0px 0 16px
   position absolute
-  top 10vh
-  right -100vw
+  top 8vh
+  left -100vw
   transition 0.5s
   z-index 999
   size(30%,100vh)
   flexCenter(,,column)
 
   &.open
-    right 0vh
+    left 0vh
     size(30%,calc(90vh - 12px))
     
   .pharmacy
