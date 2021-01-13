@@ -293,5 +293,6 @@ export default {
   padding 8px
   cursor pointer
   z-index 9999
-
+  text-shadow 2px 2px 4px rgba(0,0,0,0.5)
+  
 </style>
