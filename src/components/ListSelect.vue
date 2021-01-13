@@ -116,17 +116,14 @@ export default {
       h2
         font-size 1 rem
 
-
 @media screen and (max-width 540px)
   .list-select
     font-size 0.5rem
     size(100%,auto)
-    left calc(-100% + 1.2rem)
+    left calc(-100% + 1.6rem)
     .city,.area
       font-size 0.7rem
-      // select
-      //   font-size 0.6rem
-
+   
 @media screen and (min-width 421px)
   .list-select
     size(420px,auto)
