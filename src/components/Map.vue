@@ -74,6 +74,17 @@ export default {
       return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
     }
 
+    const getLocation = () => {   //抓取目前地理位置
+      if ('geolocation' in navigator) {
+        let possition = navigator.geolocation.getCurrentPosition((pos)=> {
+          let latitude = pos.coords.latitude
+          let longitude = pos.coords.longitude
+          store.dispatch('commitUserCoordinates',{latitude,longitude})
+          store.dispatch('commitNearPharmacy')
+        })
+      }
+    }
+
     const log = (a) => {
       // console.log(a)
     }
@@ -94,6 +105,7 @@ export default {
       log,
       distance,
       reCenter,
+      getLocation
     }
   }
 }
@@ -164,7 +176,6 @@ export default {
               i.fas.fa-map-marked-alt
               a(:href='`https://www.google.com.tw/maps/place/${item.properties.address}`' target='_blank' title='Google Map') {{ item.properties.address }}
               
-
             .distance
               h2 距離您 
               h3(:class='[{"green": distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000<1000 }]') {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 }} 
@@ -178,7 +189,7 @@ export default {
             h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
             h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
-
+.user-loaction(:class='["fas","fa-map-marker-alt"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
 </template>
 
 <style lang='stylus'>
@@ -265,4 +276,13 @@ export default {
       &.green
         color color-green
 
+.user-loaction
+  color red
+  right 4px
+  bottom 88px
+  position absolute
+  font-size 40px
+  padding 8px
+  cursor pointer
+  z-index 9999
 </style>
