@@ -72,7 +72,6 @@ export default {
 .list-select
   flexCenter(center,center,)
   size(30%,auto)
-  // background-color rgba(255,255,255,1)
   background-color #35cafc
   border-radius 0 0 16px 0
   box-shadow -4px 4px 8px rgba(0,0,0,0.5)
@@ -97,7 +96,7 @@ export default {
     z-index 999  
   .city,.area
     flexCenter()
-    color #eee
+    color #fff
     line-height 32px
     margin 8px
     font-size 1rem

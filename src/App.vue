@@ -32,16 +32,14 @@ export default {
   Map
   ListSelect
   List  
-  //- .switch(:class='["fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
-  //- .user-loaction(:class='["fas","fa-map-marker-alt"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
+
 </template>
 
 <style lang="stylus" scoped>
 @import './css/style.styl'
 .content 
   overflow hidden
-  .tooltip
-    font-size 1.5rem
+  
 
   .user-loaction
     color red

@@ -48,7 +48,7 @@ export default {
       reCenter
     } = apiGetCommonFn()
 
-    const zoom = ref(15)
+    const zoom = ref(16)
     const iconWidth = ref(25)
     const iconHeight = ref(40)
 
@@ -120,7 +120,6 @@ export default {
     @move="log('move')" 
     :options='{zoomControl: false}'
   )
-    
     l-control-zoom(position='bottomright' zoomControl='false')
     l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
     .lMarker(v-for='(item,key) in filterMaskData')
@@ -154,7 +153,8 @@ export default {
             
     l-marker(:lat-lng='[userCoordinatesData.latitude,userCoordinatesData.longitude]' @click='reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
       l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
-      l-tooltip.tooltip(:options="{interactive: true,permanent: true}" ) 你在這
+      //- l-popup.tooltip(:options="{closeOnClick: false,autoClose: false}" ) 你在這
+      l-tooltip.tooltip(:options="{interactive: true,permanent: true,direction: 'top'}" ) 您的位置
 
     .lMarker(v-for='(item,key) in nearPharmacyData')
       l-marker(:key='key' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)')
@@ -189,7 +189,7 @@ export default {
             h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
             h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
             h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
-            
+
 .user-loaction(:class='["fas","fa-map-marker-alt"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
 </template>
 
@@ -199,6 +199,13 @@ export default {
 .map
   flexCenter()
   size()
+
+.leaflet-tooltip.leaflet-zoom-hide.leaflet-clickable.leaflet-tooltip-top
+  bottom -30px
+
+.tooltip
+  font-size 1.5rem
+  font-weight bold
 
 .leaflet-container a.leaflet-popup-close-button
   font-size 24px
