@@ -18,9 +18,9 @@ export default {
   setup() {
     const store = useStore()
     const { isOpen,reCenter,userCoordinatesData } = apiGetCommonFn()
-    const handleOpen = () => {
-      store.dispatch('commitIsOpen')
-    }
+    // const handleOpen = () => {
+    //   store.dispatch('commitIsOpen')
+    // }
     const getLocation = () => {   //抓取目前地理位置
       if ('geolocation' in navigator) {
         let possition = navigator.geolocation.getCurrentPosition((pos)=> {
@@ -32,7 +32,7 @@ export default {
       }
     }
     return {
-      handleOpen,
+      // handleOpen,
       isOpen,
       reCenter,
       getLocation,
@@ -47,7 +47,7 @@ export default {
   Map
   ListSelect
   List  
-  .switch(:class='["fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
+  //- .switch(:class='["fas",{"fa-chevron-left":!isOpen},{"fa-chevron-right":isOpen}]' @click='handleOpen' )
   .user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
 </template>
 
@@ -61,22 +61,22 @@ export default {
   .user-loaction
     color red
     left 0
-    top 0
+    bottom  0
     position absolute
     font-size 40px
     padding 8px
     cursor pointer
     z-index 999
 
-  .switch
-    position absolute
-    flexCenter(center,flex-start)
-    top 0
-    right 0
-    font-size 32px
-    padding 8px
-    color color-blue
-    transition 0.5s
-    cursor pointer
-    z-index 999
+  // .switch
+  //   position absolute
+  //   flexCenter(center,flex-start)
+  //   top 0
+  //   right 0
+  //   font-size 32px
+  //   padding 8px
+  //   color color-blue
+  //   transition 0.5s
+  //   cursor pointer
+  //   z-index 999
 </style>

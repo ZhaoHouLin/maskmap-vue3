@@ -49,10 +49,10 @@ export default {
           h4 距離您 
           h3(:class='[{"green": distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000<1000 }]') {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 }} 
           h4 公尺
-
-        h3 備註: 
-          h4 {{item.properties.note}}
-        h3 更新時間: {{item.properties.updated}}
+        .other
+          h3 備註: 
+            h4 {{item.properties.note}}
+          h3 更新時間: {{item.properties.updated}}
 
     router-view
 
@@ -65,7 +65,7 @@ export default {
   border-radius 16px 0px 0 16px
   position absolute
   top 10vh
-  right -100vh
+  right -100vw
   transition 0.5s
   z-index 999
   size(30%,100vh)
@@ -99,7 +99,7 @@ export default {
       &.router-link-active
         height auto
         .info
-          .distance
+          .distance,.other
             opacity 1 
       .title
         h3
@@ -121,34 +121,23 @@ export default {
             margin-right 4px
           h4 
             font-weight normal
-        h3
-          h4
-            display inline-block
-            font-weight 500
+        .other
+          opacity 0
+          h3
+            h4
+              display inline-block
+              font-weight 500
         
-      
-
-@media screen and (max-width 420px)
+@media screen and (max-width 540px)
   .list
     font-size 0.6rem
     size(100%,90vh)
     &.open
       top 10vh
       size(100%,calc(90vh - 12px))
-
-@media screen and (max-width 1024px)
-  .list
-    font-size 0.6rem
-    &.open
-      top 10vh
-    
-@media screen and (max-width 1360px)
-  .list
-    font-size 0.6rem
-    &.open
-      top 10vh
     .pharmacy
       .item
         size(100%,160px)
+
 
 </style>
