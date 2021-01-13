@@ -82,7 +82,6 @@ export default {
     overflow auto
     
     .item
-      // flexCenter(flex-start,center,column)
       background-color rgba(255,255,255,0.9)
       color #222
       size(100%,200px)
@@ -108,7 +107,6 @@ export default {
           margin-left 8px
 
       .info
-        
         flxeCenter()
         .address
           i
@@ -143,10 +141,14 @@ export default {
     font-size 0.6rem
     &.open
       top 10vh
-
+    
 @media screen and (max-width 1360px)
   .list
     font-size 0.6rem
     &.open
       top 10vh
+    .pharmacy
+      .item
+        size(100%,160px)
+
 </style>
