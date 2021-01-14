@@ -49,21 +49,18 @@ export default {
     } = apiGetCommonFn()
 
     const zoom = ref(16)
+
     const iconWidth = ref(25)
     const iconHeight = ref(40)
-
     const iconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png`
     })
-
     const actIconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`
     })
-
     const nearIconUrl = computed(()=> {
       return `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png`
     })
-
     const iconSize = computed(()=> {
       return [iconWidth.value, iconHeight.value]
     })
@@ -89,6 +86,12 @@ export default {
       // console.log(a)
     }
 
+    const tileProviders = reactive({
+      maxZoom: 20,
+      attribution: `&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> | created by <a target="_blank" href="https://zhaohoulin.github.io/myP5jsWork/#/">ZZ 炤炤</a>` 
+    })
+    
+    
     return {
       selectList,
       filterMaskData,
@@ -105,7 +108,8 @@ export default {
       log,
       distance,
       reCenter,
-      getLocation
+      getLocation,
+      tileProviders
     }
   }
 }
@@ -121,7 +125,7 @@ export default {
     :options='{zoomControl: false}'
   )
     l-control-zoom(position='bottomright' zoomControl='false')
-    l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    l-tile-layer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" :attribution="tileProviders.attribution")
     .lMarker(v-for='(item,key) in filterMaskData')
       l-marker( :key='key' v-if='item.properties.county === selectList.city && item.properties.town === selectList.area' :lat-lng='[item.geometry.coordinates[1],item.geometry.coordinates[0]]' @click='reCenter(item.geometry.coordinates)' )
         l-icon(:icon-url="$route.params.id===item.properties.name?actIconUrl:distance(item.geometry.coordinates[1],item.geometry.coordinates[0])<1?nearIconUrl:iconUrl" :icon-size="iconSize" )
@@ -153,7 +157,6 @@ export default {
             
     l-marker(:lat-lng='[userCoordinatesData.latitude,userCoordinatesData.longitude]' @click='reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
       l-icon(:icon-url='`https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png`' :icon-size="iconSize")
-      //- l-popup.tooltip(:options="{closeOnClick: false,autoClose: false}" ) 你在這
       l-tooltip.tooltip(:options="{interactive: true,permanent: true,direction: 'top'}" ) 您的位置
 
     .lMarker(v-for='(item,key) in nearPharmacyData')
@@ -294,5 +297,5 @@ export default {
   cursor pointer
   z-index 9999
   text-shadow 2px 2px 4px rgba(0,0,0,0.5)
-  
+
 </style>
