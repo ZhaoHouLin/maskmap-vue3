@@ -291,6 +291,7 @@ export default {
   color color-yellow
   right 2px
   bottom 88px
+  right 2px
   position absolute
   font-size 36px
   padding 8px
@@ -298,5 +299,8 @@ export default {
   z-index 9999
   text-shadow 2px 2px 4px rgba(0,0,0,0.5)
   -webkit-text-stroke 1.6px black
-
+  
+// @media screen and (max-width 1024px)
+//   .user-loaction
+//     bottom 36px
 </style>
