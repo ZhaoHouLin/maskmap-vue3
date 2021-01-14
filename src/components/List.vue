@@ -133,7 +133,7 @@ export default {
     font-size 0.6rem
     size(100%,90vh)
     &.open
-      top 10vh
+      top 8vh
       size(100%,calc(90vh - 12px))
     .pharmacy
       .item

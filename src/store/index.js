@@ -29,6 +29,7 @@ export default createStore({
     },
     stateNearPharmacy(state, payload) {
       state.nearPharmacyData.push(payload)
+      state.filterMaskData = state.nearPharmacyData
     },
     stateMaskData(state,payload) {
       state.maskData = payload
