@@ -188,12 +188,12 @@ export default {
               h4 {{item.properties.note}}
             h4 更新時間: {{item.properties.updated}}
           
-          l-tooltip
-            h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
-            h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
-            h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
+          //- l-tooltip
+          //-   h3 成人: {{item.properties.mask_adult?item.properties.mask_adult+'個':'未取得資料'}}
+          //-   h3 兒童: {{item.properties.mask_child?item.properties.mask_child+'個':'未取得資料'}}
+          //-   h3 距離: {{distance(item.geometry.coordinates[1],item.geometry.coordinates[0])* 1000 + '公尺'}} 
 
-.user-loaction(:class='["fas","fa-map-marker-alt"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
+.user-loaction(:class='["fas","fa-street-view"]' @click='getLocation(),reCenter([userCoordinatesData.longitude,userCoordinatesData.latitude])')
 </template>
 
 <style lang='stylus'>
@@ -288,14 +288,18 @@ export default {
         color color-green
 
 .user-loaction
-  color red
-  right 4px
+  color color-yellow
+  // right 4px
+  // bottom 88px
+  right 2px
+  // bottom 12vh
   bottom 88px
   position absolute
-  font-size 40px
+  font-size 36px
   padding 8px
   cursor pointer
   z-index 9999
   text-shadow 2px 2px 4px rgba(0,0,0,0.5)
+  -webkit-text-stroke 1.6px black
 
 </style>
