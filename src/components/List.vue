@@ -139,5 +139,4 @@ export default {
       .item
         size(100%,160px)
 
-
 </style>

@@ -289,10 +289,7 @@ export default {
 
 .user-loaction
   color color-yellow
-  // right 4px
-  // bottom 88px
   right 2px
-  // bottom 12vh
   bottom 88px
   position absolute
   font-size 36px
