@@ -1,20 +1,9 @@
-# maskmap-vue3
+# 口罩地圖 maskmap-vue3
 DEMO網頁: https://zhaohoulin.github.io/maskmap-vue3/
 
-## Project setup
-```
-npm install
-```
+![](https://i.imgur.com/QcygPHl.jpg)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 功能 & 特色
+* 讀取使用者位置，呈現1公里內的藥局資訊
+* 口罩剩餘數量
+* 藥局與使用者的距離
