@@ -37,9 +37,9 @@ const commonFn = () => {
     })
   }
 
-  const getLocation = () => {                         //取得使用者目前經緯度
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((pos) => {
+  const getLocation = () => {                         
+    if ('geolocation' in navigator) {                 //測試地理位置定位是否存在
+      navigator.geolocation.getCurrentPosition((pos) => { //取得使用者目前經緯度
         let latitude = pos.coords.latitude
         let longitude = pos.coords.longitude
         store.dispatch('commitUserCoordinates', { latitude, longitude })

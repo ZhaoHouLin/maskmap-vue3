@@ -52,7 +52,7 @@ export default createStore({
       state.nearPharmacyData= []
       let λA = state.userCoordinates.latitude
       let ΦA = state.userCoordinates.longitude
-      state.maskData.filter((item) => {
+      state.maskData.filter((item) => {               //篩選距離1公里內的藥局
         let λB = item.geometry.coordinates[1]
         let ΦB = item.geometry.coordinates[0]
         let distance = apiGetLatLonDistance(λA, ΦA, λB, ΦB)
@@ -61,7 +61,7 @@ export default createStore({
         }
       })
     },
-    async getMaskAPI({ commit }, payload) {
+    async getMaskAPI({ commit }, payload) {           //取得藥局口罩相關資料
       try {
         const res = await apiGetMaskData()
         this.state.filterMaskData = []
@@ -75,7 +75,7 @@ export default createStore({
         console.error(error)
       }
     },
-    filterCityArea({ state,commit }, payload) {
+    filterCityArea({ state,commit }, payload) {       //篩選各縣市行政區內的藥局
       state.filterMaskData = []
       state.maskData.filter((item)=> {
         if(item.properties.county === payload[0] && item.properties.town === payload[1]) {
