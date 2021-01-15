@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-
+import { apiGetLatLonDistance } from '../api'
 
 const commonFn = () => {
 
@@ -37,6 +37,24 @@ const commonFn = () => {
     })
   }
 
+  const getLocation = () => {                         //取得使用者目前經緯度
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        let latitude = pos.coords.latitude
+        let longitude = pos.coords.longitude
+        store.dispatch('commitUserCoordinates', { latitude, longitude })
+        store.dispatch('commitNearPharmacy')
+      })
+    }
+  }
+
+  const distance = (λB, ΦB) => {                      //取得藥局經緯度後與使用者經緯度一起帶入公式計算距離
+    let λA = store.getters.userCoordinatesData.latitude
+    let ΦA = store.getters.userCoordinatesData.longitude
+    return apiGetLatLonDistance(λA, ΦA, λB, ΦB)
+  }
+
+
   return {
     selectList,
     isOpen,
@@ -44,7 +62,9 @@ const commonFn = () => {
     userCoordinatesData,
     centerCoordinatesData,
     nearPharmacyData,
-    reCenter
+    reCenter,
+    getLocation,
+    distance
   }
 
 }

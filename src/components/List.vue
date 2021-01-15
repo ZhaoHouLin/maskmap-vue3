@@ -1,17 +1,11 @@
 <script>
 import cityName from '../assets/cityName.json'
 import { useStore } from 'vuex'
-import { apiGetCommonFn,apiGetLatLonDistance } from '../api'
-
+import { apiGetCommonFn } from '../api'
 export default {
   setup() {
     const store = useStore()
-    const {isOpen,filterMaskData,reCenter} = apiGetCommonFn()
-    const distance = (λB, ΦB)=> {
-      let λA = store.getters.userCoordinatesData.latitude
-      let ΦA = store.getters.userCoordinatesData.longitude
-      return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
-    }
+    const {isOpen,filterMaskData,reCenter,distance} = apiGetCommonFn()
 
     return {
       isOpen,

@@ -2,11 +2,9 @@
 import { onMounted, ref, reactive, computed, onUpdated} from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-
 import ListSelect from '../src/components/ListSelect'
 import List from '../src/components/List'
 import Map from '../src/components/Map'
-
 import { apiGetCommonFn } from './api'
 
 export default {
@@ -23,6 +21,7 @@ export default {
       isOpen,
       reCenter,
     }
+
   }
 }
 </script>
@@ -40,7 +39,6 @@ export default {
 .content 
   overflow hidden
   
-
   .user-loaction
     color red
     right 4px

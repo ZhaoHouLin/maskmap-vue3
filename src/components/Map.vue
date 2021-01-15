@@ -2,8 +2,7 @@
 import Leaflet from 'leaflet'
 import { onMounted, ref, reactive, computed} from 'vue'
 import { useStore } from 'vuex'
-import { apiGetCommonFn,apiGetLatLonDistance } from '../api'
-
+import { apiGetCommonFn } from '../api'
 import {
   LMap,
   LIcon,
@@ -45,7 +44,9 @@ export default {
       nearPharmacyData,
       centerCoordinatesData ,
       userCoordinatesData,
-      reCenter
+      reCenter,
+      getLocation,
+      distance
     } = apiGetCommonFn()
 
     const zoom = ref(16)
@@ -64,23 +65,6 @@ export default {
     const iconSize = computed(()=> {
       return [iconWidth.value, iconHeight.value]
     })
-
-    const distance = (λB, ΦB)=> {
-      let λA = store.getters.userCoordinatesData.latitude
-      let ΦA = store.getters.userCoordinatesData.longitude
-      return apiGetLatLonDistance(λA,ΦA,λB,ΦB)
-    }
-
-    const getLocation = () => {   //抓取目前地理位置
-      if ('geolocation' in navigator) {
-        let possition = navigator.geolocation.getCurrentPosition((pos)=> {
-          let latitude = pos.coords.latitude
-          let longitude = pos.coords.longitude
-          store.dispatch('commitUserCoordinates',{latitude,longitude})
-          store.dispatch('commitNearPharmacy')
-        })
-      }
-    }
 
     const log = (a) => {
       // console.log(a)

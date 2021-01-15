@@ -6,13 +6,16 @@ import { apiGetCommonFn } from '../api'
 export default {
   setup() {
     const store = useStore()
+
     const {
       selectList,
       isOpen,
       filterMaskData,
       userCoordinatesData,
-      reCenter
+      reCenter,
+      getLocation
     } = apiGetCommonFn()
+
     const initMaskData = (city,area) => {
       store.dispatch('getMaskAPI',{city,area}).then(()=> {
         getLocation() //取得資料後再取得所在位置
@@ -21,19 +24,11 @@ export default {
     const filterCityArea = (city,area) => {
       store.dispatch('filterCityArea',[city,area])
     }
-    const getLocation = () => {   //抓取目前地理位置
-      if ('geolocation' in navigator) {
-        let possition = navigator.geolocation.getCurrentPosition((pos)=> {
-          let latitude = pos.coords.latitude
-          let longitude = pos.coords.longitude
-          store.dispatch('commitUserCoordinates',{latitude,longitude})
-          store.dispatch('commitNearPharmacy')
-        })
-      }
-    }
+
     const handleOpen = () => {
       store.dispatch('commitIsOpen')
     }
+    
     onMounted(()=> {
       initMaskData(selectList.city,selectList.area)
     }) 
