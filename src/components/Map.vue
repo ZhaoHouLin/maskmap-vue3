@@ -196,11 +196,11 @@ export default {
 
 .leaflet-container a.leaflet-popup-close-button
   font-size 24px
-  color #fff
+  color color-fz
   top 12px
   right 16px
   &:hover
-    color #222
+    color #fff
 
 .leaflet-popup-content-wrapper
   size(auto,auto)
@@ -215,14 +215,14 @@ export default {
   border-radius 16px 16px 0 0
   flexCenter(flex-start,center,)
   size(100%,auto)
-  background-color color-green
+  background-color color-primary
   padding 8px 16px
   i 
     font-size 16px
-    color #fff
+    color #222
   h1
     margin-left 8px
-    color #fff
+    color #222
     
 .mask-quantity
   flexCenter()
@@ -234,12 +234,12 @@ export default {
       font-size 18px
     h3
       font-size 24px
-      color #fff
+      color #222
       
   .mask-adult
-    background-color color-blue
+    background-color color-primary-dark
   .mask-child 
-    background-color color-yellow
+    background-color color-primary-light
 
 .info
   margin-top 8px
@@ -249,8 +249,9 @@ export default {
     a
       font-size 16px
       font-weight 600
+      color color-primary-dark
     i
-      color color-green
+      color color-primary-dark
       margin-right 8px
     h4
       display inline-block
@@ -269,10 +270,10 @@ export default {
       color red
       font-size 24px
       &.green
-        color color-green
+        color green
 
 .user-loaction
-  color color-yellow
+  color color-primary-light
   right 2px
   bottom 88px
   right 2px

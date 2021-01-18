@@ -77,7 +77,7 @@ export default {
     
     .item
       background-color rgba(255,255,255,0.9)
-      color #222
+      color color-fz
       size(100%,200px)
       padding 0
       margin 0
@@ -97,18 +97,19 @@ export default {
             opacity 1 
       .title
         h3
-          color #fff
+          color color-fz
           margin-left 8px
 
       .info
         flxeCenter()
         .address
+          margin 4px 0
           i
-            color color-green
+            color color-primary-dark
             margin-right 8px
           a
             font-weight 900
-            color color-blue
+            color color-primary-dark
         .distance
           opacity 0
           h4,h3
