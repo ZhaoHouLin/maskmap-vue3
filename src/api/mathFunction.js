@@ -18,7 +18,6 @@ const LatLonDistance = (λA, ΦA, λB, ΦB) => {   //計算經緯度距離
     // if (unit=="N") { dist = dist * 0.8684 }
     // console.log(λA,ΦA,'&',λB,ΦB ,'result',dist)
     dist = dist.toFixed(2)
-    // return dist < 1 ? dist * 1000 + '公尺' : dist + '公里'
     return dist
   }
 }
